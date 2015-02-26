@@ -110,17 +110,17 @@ public final class Factory {
 	 * @return future object returned from the completed task
 	 */
 	public <T> Future<T> getExecutorForCallableTask(Callable<T> task, long delay, TimeUnit unit) {
-		logger.info("submitting task " + task + " in " + delay + " " + unit.toString());
+		logger.info("executing task in " + delay + " " + unit.toString() + " task " + task.toString());
 		return executorService.submit(task);
 	}
 	
 	/**
 	 * Submit a task to run in a separate thread
 	 * @param task - an object that performs the task when called
-	 * @return future object returned from the completed task
+	 * @return future object returned from the completed task 
 	 */
 	public <T> Future<T> getExecutorForCallableTask(Callable<T> task) {
-		logger.info("submitting task " + task + " immediatley");
+		logger.info("executing task " + task.toString());
 		return executorService.submit(task);
 	}
 	
