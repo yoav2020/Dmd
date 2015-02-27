@@ -19,6 +19,8 @@ public class BackEndServer {
 		/* PLACE HOLDER START */
 		DomainToAnalyze a1 = Factory.getFactory().getDmainToAnalyze("cnn.com");
 		dispatchQueue.add(a1);
+		DomainToAnalyze b1 = Factory.getFactory().getDmainToAnalyze("ynet.co.il");
+		dispatchQueue.add(b1);
 		
 		/* PLACE HOLDER END */
 		dispatcher.run();

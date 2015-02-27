@@ -18,7 +18,7 @@ public abstract class ProcessChain {
 	
 	public abstract void run();
 	
-	protected final void flush() {
+	protected void flush() {
 		logger.info("putting back: " + domainToAnalyze.getDomainName() + " (" + getChainName() +")");
 		dispatchQueue.add(domainToAnalyze);
 	}
@@ -49,5 +49,13 @@ public abstract class ProcessChain {
 
 	public List<Feature> getFeatureList() {
 		return chainFeaturesList;
+	}
+
+	public Queue<DomainToAnalyze> getDispatchQueue() {
+		return dispatchQueue;
+	}
+
+	public void setDispatchQueue(Queue<DomainToAnalyze> dispatchQueue) {
+		this.dispatchQueue = dispatchQueue;
 	}
 }

@@ -122,6 +122,10 @@ public class WhoisLookup {
 	  
 	  public ArrayList<WhoisQueryResults> parseWhoisResponse(ArrayList<String> response) {
 		  ArrayList<WhoisQueryResults> WhoisQueryResultsList = new ArrayList<>();
+		  /* first line in response is status message
+		   * so we remove it as it doesn't contain any relevant response
+		   */
+		  response.remove(0);
 		  
 		  for (String line : response) {
 			  try {
@@ -130,6 +134,8 @@ public class WhoisLookup {
 				logger.warn("failed to process line: " + line, e);
 			}
 		  }
+		  logger.info("returning " + WhoisQueryResultsList.size() + " results");
+		  
 		  return WhoisQueryResultsList;
 	  }
 
@@ -141,6 +147,7 @@ public class WhoisLookup {
 	 */
 	  private WhoisQueryResults parseWhoisLine(String line) throws ParseException {
 			String [] splitLine = line.split("\\|");
+			logger.info("line=" + line);
 			WhoisQueryResults whoIsQueryResults = new WhoisQueryResults();
 		  	  
 		  	if (splitLine.length < 7) {

@@ -3,6 +3,7 @@ package il.ac.mta.bi.dmd.infra;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerArffCreator;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
@@ -24,7 +25,7 @@ import org.apache.log4j.Logger;
 
 public final class Factory {	
 	private static Logger 	logger 	= Logger.getLogger(BackEndServer.class);
-	private ExecutorService executorService = new ScheduledThreadPoolExecutor(128);
+	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(128);
 	private static Factory 	theFactory = null;
 	
 	private Factory() {
@@ -96,10 +97,13 @@ public final class Factory {
 		ChainRunnerDnsLookup dnsLookupRunner = new ChainRunnerDnsLookup();
 		processingChain.addToChain(dnsLookupRunner);
 		
+		/* ChainRunnerWhoisQuery */
+		ChainRunnerWhoisQuery chainRunnerWhoisQuery = new ChainRunnerWhoisQuery();
+		processingChain.addToChain(chainRunnerWhoisQuery);
+		
 		/* ChainRunnerArffCreator*/
-		ChainRunnerArffCreator singletonChainRunnerArffCreator = 
-				ChainRunnerArffCreator.getChainRunnerArffCreator();
-		processingChain.addToChain(singletonChainRunnerArffCreator);
+		ChainRunnerArffCreator chainRunnerArffCreator = new ChainRunnerArffCreator();
+		processingChain.addToChain(chainRunnerArffCreator);
 	}
 	
 	/**
@@ -111,7 +115,7 @@ public final class Factory {
 	 */
 	public <T> Future<T> getExecutorForCallableTask(Callable<T> task, long delay, TimeUnit unit) {
 		logger.info("executing task in " + delay + " " + unit.toString() + " task " + task.toString());
-		return executorService.submit(task);
+		return executorService.schedule(task, delay, unit);
 	}
 	
 	/**

@@ -36,7 +36,7 @@ public class Dispatacher {
 					continue;
 				}
 	
-				logger.info("next chain is " + nextChain.getChainName());
+				logger.info("next chain is " + "(" + nextChain.getChainName() + ")");
 				nextChain.setDispatchQueue(dispatchQueue);
 				nextChain.setDomainToAnalyze(domainToAnalyze);
 			
@@ -44,7 +44,6 @@ public class Dispatacher {
 			} catch(Exception e) {
 				logger.error("caught exception while running chain", e);
 			}
-
 		}
 	}
 

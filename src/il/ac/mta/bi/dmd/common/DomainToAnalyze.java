@@ -2,11 +2,13 @@ package il.ac.mta.bi.dmd.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class DomainToAnalyze {
 	private String domainName;
-	private HashMap<String, Feature> featuresMap = new HashMap<String, Feature>();
-	private HashMap<String, Object> propertiesMap = new HashMap<String, Object>();
+	private Map<String, Feature> featuresMap = new LinkedHashMap<String, Feature>();
+	private Map<String, Object> propertiesMap = new HashMap<String, Object>();
 	private ProcessingChain chain;
 	private Classification classification = Classification.UNKNOWN;
 	
@@ -27,7 +29,7 @@ public class DomainToAnalyze {
 	 * purposes
 	 * @return mapping between a feature name and it's value
 	 */
-	public HashMap<String, Feature> getFeaturesMap() {
+	public Map<String, Feature> getFeaturesMap() {
 		return featuresMap;
 	}
 
@@ -62,7 +64,7 @@ public class DomainToAnalyze {
 	 * Unlike the features map, properties stored in this map aren't used for data-mining.
 	 * @return mapping between a property name and it's value
 	 */
-	public HashMap<String, Object> getPropertiesMap() {
+	public Map<String, Object> getPropertiesMap() {
 		return propertiesMap;
 	}
 	

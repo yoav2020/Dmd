@@ -6,8 +6,7 @@ import weka.core.FastVector;
 public class Feature {
 	
 	private String name;
-	private String value;
-	private Object valueFeature;
+	private Object value;
 	private FeatureType type;
 	
 	public enum FeatureType {
@@ -27,21 +26,15 @@ public class Feature {
 
 	/**Returns the string value of the feature
 	 */
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
 
 	/**Sets the feature string value
 	 * @param value the string value of the feature
 	 */
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		this.value = value;
-	}
-
-	/**Returns the value of the feature as returned by the runner
-	 */
-	public Object getValueFeature() {
-		return valueFeature;
 	}
 
 	/**Returns the feature type, as stored in the value param

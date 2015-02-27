@@ -8,6 +8,7 @@ import il.ac.mta.bi.dmd.lookup.DnsLookup;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
@@ -55,16 +56,16 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 				logger.info("inserting " + numOfRecords + " domain records for " +
 						domainToAnalyze.getDomainName());
 				
-				HashMap<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
-				HashMap<String, Object> propertiesMap = domainToAnalyze.getPropertiesMap();
+				Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
+				Map<String, Object> propertiesMap = domainToAnalyze.getPropertiesMap();
 				
 				Feature feature = featuresMap.get("domainRecords");
-				feature.setValue(numOfRecords.toString());
+				feature.setValue(numOfRecords);
 				featuresMap.put(feature.getName(), feature);
 				propertiesMap.put(feature.getName(), domainRecords);
 				
-			} catch (IOException e) {
-				logger.error("lookup failed", e);
+			} catch (Exception e) {
+				logger.error("caught exception ", e);
 				setStatus(ProcessingChain.chainStatus.ERROR);
 			}
 			
