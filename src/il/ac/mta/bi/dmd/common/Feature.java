@@ -56,7 +56,7 @@ public class Feature {
 			break;
 		case STRING:
 		default:
-			attr =  new Attribute(name, (FastVector) null);
+			attr =  new Attribute(name);
 			break;
 		}
 		return attr;

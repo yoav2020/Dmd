@@ -1,7 +1,5 @@
 package il.ac.mta.bi.dmd.lookup;
 
-import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -147,7 +145,7 @@ public class WhoisLookup {
 	 */
 	  private WhoisQueryResults parseWhoisLine(String line) throws ParseException {
 			String [] splitLine = line.split("\\|");
-			logger.info("line=" + line);
+			logger.info(line);
 			WhoisQueryResults whoIsQueryResults = new WhoisQueryResults();
 		  	  
 		  	if (splitLine.length < 7) {

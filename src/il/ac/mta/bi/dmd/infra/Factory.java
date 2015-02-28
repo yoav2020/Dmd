@@ -1,10 +1,12 @@
 package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerArffCreator;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
+import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 
@@ -72,11 +74,12 @@ public final class Factory {
 	 * @param domainName the domain name
 	 * @return the nominal feature
 	 */
-	public DomainToAnalyze getDmainToAnalyze(String domainName) {
+	public DomainToAnalyze getDmainToAnalyze(String domainName, 
+											 Classification classification) {
 		logger.info("creating domain object for: " + domainName);
 		
 		ProcessingChain processingChain = new ProcessingChain();
-		DomainToAnalyze domainToAnalyze = new DomainToAnalyze(domainName);
+		DomainToAnalyze domainToAnalyze = new DomainToAnalyze(domainName, classification);
 		addChainRunners(processingChain);
 		domainToAnalyze.setChain(processingChain);
 		domainToAnalyze.init();
@@ -97,13 +100,17 @@ public final class Factory {
 		ChainRunnerDnsLookup dnsLookupRunner = new ChainRunnerDnsLookup();
 		processingChain.addToChain(dnsLookupRunner);
 		
-		/* ChainRunnerWhoisQuery */
+		/* ChainRunnerWhoisQuery  */
 		ChainRunnerWhoisQuery chainRunnerWhoisQuery = new ChainRunnerWhoisQuery();
 		processingChain.addToChain(chainRunnerWhoisQuery);
 		
 		/* ChainRunnerArffCreator*/
 		ChainRunnerArffCreator chainRunnerArffCreator = new ChainRunnerArffCreator();
 		processingChain.addToChain(chainRunnerArffCreator);
+		
+		/* ChainRunnerClassifierBuilder*/
+		ChainRunnerClassifierBuilder chainRunnerClassifierBuilder = new ChainRunnerClassifierBuilder();
+		processingChain.addToChain(chainRunnerClassifierBuilder);
 	}
 	
 	/**
@@ -126,6 +133,19 @@ public final class Factory {
 	public <T> Future<T> getExecutorForCallableTask(Callable<T> task) {
 		logger.info("executing task " + task.toString());
 		return executorService.submit(task);
+	}
+	
+	/**
+	 * Executes a scheduled task to run in a separate thread at periodically, fixed times
+	 * @param task - an object that performs the task when called
+	 * @param initDelay - delay for initial execution
+	 * @param delay - delay between task executions
+	 * @param unit - time unit for the delay 
+	 */
+	public void getExecutorForPerodicRunnableTask(Runnable task, long initDelay, long delay, TimeUnit unit) {
+		logger.info("executing task in " + initDelay + " " + unit.toString() + " periodically " + 
+				delay + " " + unit.toString() + " task " + task.toString());
+		executorService.scheduleWithFixedDelay(task, delay, delay, unit); 
 	}
 	
 	/**

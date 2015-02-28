@@ -1,6 +1,8 @@
 package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
+import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
@@ -17,10 +19,16 @@ public class BackEndServer {
 		logger.info("backend start");
 		
 		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDmainToAnalyze("cnn.com");
+		DomainToAnalyze a1 = Factory.getFactory().getDmainToAnalyze("cnn.com", Classification.BENIGN);
 		dispatchQueue.add(a1);
-		//DomainToAnalyze b1 = Factory.getFactory().getDmainToAnalyze("ynet.co.il");
-		//dispatchQueue.add(b1);
+		DomainToAnalyze b1 = Factory.getFactory().getDmainToAnalyze("ynet.co.il", Classification.BENIGN);
+		dispatchQueue.add(b1);
+		DomainToAnalyze c1 = Factory.getFactory().getDmainToAnalyze("mobile.bitterstrawberry.org", Classification.MALICIOUS);
+		dispatchQueue.add(c1);
+		DomainToAnalyze d1 = Factory.getFactory().getDmainToAnalyze("microsoft.com", Classification.BENIGN);
+		dispatchQueue.add(d1);
+		DomainToAnalyze e1 = Factory.getFactory().getDmainToAnalyze("www.cellphoneupdated.com", Classification.MALICIOUS);
+		dispatchQueue.add(e1);
 		
 		/* PLACE HOLDER END */
 		dispatcher.run();

@@ -1,23 +1,23 @@
 package il.ac.mta.bi.dmd.chain.runner;
 
+import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
+import il.ac.mta.bi.dmd.common.ProcessingChain;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
-import weka.core.Instances;
 import weka.core.SparseInstance;
 
 public class ChainRunnerArffCreator extends ProcessChain {
 	private static Logger logger = Logger.getLogger(ChainRunnerArffCreator.class);
 
 	private FastVector fvWekaAttributes;
+	private Integer fvWekaAttributesHash;
 	private Instance instanceData;
 	
 	public ChainRunnerArffCreator() {
@@ -26,54 +26,82 @@ public class ChainRunnerArffCreator extends ProcessChain {
 
 	@Override
 	public void run() {
-		createFvWekaAttributes();
-		createInstance();
+		try {
+			createFvWekaAttributes();
+			createDataInstance();
+			domainToAnalyze.getPropertiesMap().put("fvWekaAttributes", fvWekaAttributes);
+			domainToAnalyze.getPropertiesMap().put("fvWekaAttributesHash", fvWekaAttributesHash);
+			domainToAnalyze.getPropertiesMap().put("instanceData", instanceData);
+		} catch (Exception e) {
+			logger.error("caught exception ", e);
+			setStatus(ProcessingChain.chainStatus.ERROR);
+		}
+		
+		String hello = "hello";
+		logger.info(hello.hashCode());
+		
 		flush();
 	}
 	
-	private void createInstance() {
+	private void createDataInstance() {
 		Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
 		Instance instanceData = new SparseInstance(featuresMap.size());
-		int i = 0;
 		
 		for (Feature feature : featuresMap.values()) {
 			switch (feature.getType()) {
 			case INTEGER:
-				instanceData.setValue((Attribute)fvWekaAttributes.elementAt(i), 
-						(Integer)feature.getValue());
+				if (feature.getValue() != null) {
+					instanceData.setValue(feature.toAttribute(), 
+							(Integer)feature.getValue());
+				} else {
+					instanceData.setValue(feature.toAttribute(), 0);
+				}
 				break;
-			case NOMINAL: /* not supported yet */
-				break;
+			case NOMINAL:
 			case STRING:
-			default:
-				instanceData.setValue((Attribute)fvWekaAttributes.elementAt(i), 
-						(String)feature.getValue());
+				if (feature.getValue() != null) {
+					instanceData.setValue(feature.toAttribute(), 
+							((String)feature.getValue()).hashCode());
+				} else {
+					instanceData.setValue(feature.toAttribute(), "");
+				}
 				break;
+			default:
+				logger.warn("attribute not supported");
 			}
 			logger.info(feature.getName() + ": " + feature.getValue());
-			i ++;
 		}
+		if (domainToAnalyze.getClassification() != Classification.UNKNOWN) {
+			instanceData.setValue(domainToAnalyze.classToAttribute(), 
+								  domainToAnalyze.getClassification().toString());
+		}
+		logger.info("classification " + ": " + domainToAnalyze.getClassification().toString());
 		
 		this.instanceData = instanceData;
+		
+		logger.info("created data instance successfully!");
 	}
 	
 	private void createFvWekaAttributes() {
 		Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
 		FastVector fvWekaAttributes = new FastVector();
+		StringBuilder fvWekaAtrributeString = new StringBuilder();
 		
 		for (Feature feature : featuresMap.values()) {
-			fvWekaAttributes.addElement(feature.toAttribute());
 			logger.info("adding attribute to model: " + feature.toAttribute().toString());
+			fvWekaAttributes.addElement(feature.toAttribute());
+			fvWekaAtrributeString.append(feature.toAttribute().toString());
 		}
 		
-	   FastVector fvClassVal = new FastVector();
-	   fvClassVal.addElement("malicious");
-	   fvClassVal.addElement("benign");
-	   Attribute ClassAttribute = new Attribute("domainClassification", fvClassVal);
-	   fvWekaAttributes.addElement(ClassAttribute);
+		logger.info("adding attribute to model: " + domainToAnalyze.classToAttribute().toString());
+		fvWekaAttributes.addElement(domainToAnalyze.classToAttribute());
+		fvWekaAtrributeString.append(domainToAnalyze.classToAttribute().toString());
 	   
-	   this.fvWekaAttributes = fvWekaAttributes;
+		fvWekaAttributes.trimToSize();
+	   
+		this.fvWekaAttributes = fvWekaAttributes;
+		this.fvWekaAttributesHash = fvWekaAtrributeString.toString().hashCode();
 	
-	   logger.info("created Attribute-Relation File Format (arff) successfully!");
+		logger.info("created arff successfully, hash=" + fvWekaAttributesHash);
 	}
 }

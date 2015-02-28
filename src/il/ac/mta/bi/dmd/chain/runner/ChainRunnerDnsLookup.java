@@ -6,8 +6,6 @@ import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.infra.Factory;
 import il.ac.mta.bi.dmd.lookup.DnsLookup;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -26,7 +24,7 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 	static Logger 					logger = Logger.getLogger(ChainRunnerDnsLookup.class);
 	
 	private static final DnsLookup	dnsLookup = new DnsLookup();
-	private static final String 	dnsServer = "8.8.8.8";
+	private static final String 	DNS_SERVER = "8.8.8.8";
 	
 	public ChainRunnerDnsLookup() {
 		setChainName("DNS Lookup");
@@ -47,7 +45,7 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 				Integer numOfRecords = 0;
 				
 				Record [] domainRecords = dnsLookup.lookupTypeA(domainToAnalyze.getDomainName(), 
-						dnsServer);
+						DNS_SERVER);
 				
 				if(domainRecords != null) {
 					numOfRecords = domainRecords.length;

@@ -10,17 +10,22 @@ import il.ac.mta.bi.dmd.lookup.WhoisQueryResults;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.xbill.DNS.Record;
+
+/**
+ * This chain runner fills the following feature for the domain to analyze:
+ * "asNum" - the domain address autonomous system, "bgpPrefix" the domain address
+ * network and prefix, "cc" - country code, "asOnwer" - the as owner
+ */
 
 public class ChainRunnerWhoisQuery extends ProcessChain {
 	static Logger 					logger = Logger.getLogger(ChainRunnerDnsLookup.class);
@@ -31,12 +36,10 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	private static final String WHOIS_SERVER_NAME = "whois.cymru.com";
 	
 	/* members used by all chain instances */
-	private static final ConcurrentLinkedQueue<ChainRunnerWhoisQuery> inQueue =
-			new ConcurrentLinkedQueue<>();
-	private static Integer elementsInQueue = 0;
-	
-	private final Map<String,ChainRunnerWhoisQuery> pendingChainsMap = 
-			new HashMap<>();
+	private static final LinkedBlockingQueue<ChainRunnerWhoisQuery> inQueue =
+			new LinkedBlockingQueue<>();
+			
+	private static Boolean isConsumerRunnig = false;
 	
 	public ChainRunnerWhoisQuery() {
 		setChainName("Whois Lookup");
@@ -44,87 +47,93 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 		chainFeaturesList.add(Factory.getFactory().getStringFeature("bgpPrefix"));
 		chainFeaturesList.add(Factory.getFactory().getStringFeature("cc"));
 		chainFeaturesList.add(Factory.getFactory().getStringFeature("asOnwer"));
+		
+		if (isConsumerRunnig == false) {
+			firstChainInit();
+		}
+	}
+
+	/* the first ChainRunnerWhoisQuery created of this type will execute the consumer
+	 * thread, which creates the actual queries coming from all other ChainRunnerWhoisQueries
+	 */
+	private void firstChainInit() {
+		Factory.getFactory().getExecutorForPerodicRunnableTask(new ChainRunnerWhoisQueryWorker(), 
+															   1, 1, TimeUnit.SECONDS);
+		isConsumerRunnig = true;
 	}
 	
 	@Override
 	public void run() {
 		inQueue.add(this);
-		elementsInQueue ++;
-		
-		/* create a worker thread to perform the WhoIsQuery
-		 * when there's at least 1 pending domain in queue
-		 */
-		if (elementsInQueue % MAX_QUERIES_IN_REQUEST == 1) {
-			Factory.getFactory().getExecutorForCallableTask(new ChainRunnerWhoisQueryWorker());
-			elementsInQueue = 1;
-		}
-		
 	}
 
 	/* internal private class for worker thread; returns a Future reference
 	 * to the object called so it can be used to check return value */
-	
-	private class ChainRunnerWhoisQueryWorker implements Callable<Object>{		
+	private class ChainRunnerWhoisQueryWorker implements Runnable{	
+		
+		Map<String,ChainRunnerWhoisQuery> pendingChainsMap = new HashMap<>();
+		Set<String> whoIsQueries = new HashSet<>();
+				
 		@Override
-		public Object call() throws InterruptedException, UnknownHostException, IOException, ParseException {
+		public void run() {		
 			try {
-				
-				/* make sure the request is full before creating
-				 *  a new one */
-				
-				synchronized (inQueue) {
-					ChainRunnerWhoisQuery chainRunner = null;
-					Set<String> whoIsQueries = new HashSet<>();
-					DomainToAnalyze domainToAnalyze = null;
+				ChainRunnerWhoisQuery chainRunner = null;
+				setStatus(ProcessingChain.chainStatus.OK);
 					
-					while (inQueue.isEmpty() == false && whoIsQueries.size() < MAX_QUERIES_IN_REQUEST) {
-						chainRunner = inQueue.poll();
-						domainToAnalyze = chainRunner.domainToAnalyze;
-						Record[] records = (Record[]) domainToAnalyze.getPropertiesMap().get("domainRecords");
+				while (inQueue.isEmpty() == false && whoIsQueries.size() < MAX_QUERIES_IN_REQUEST) {
+					chainRunner = inQueue.take();
+					DomainToAnalyze domainToAnalyze = chainRunner.domainToAnalyze;
 						
-						if (records != null) {
-							for (Record record : records) {
-								pendingChainsMap.put(record.rdataToString(), chainRunner);
-								whoIsQueries.add(record.rdataToString());
-							}
-						}
-					}
+					logger.info("popped: " + domainToAnalyze.getDomainName());
 						
-					ArrayList<String> whoisLookupResponses = 
-							whoisLookup.bulkLookup(WHOIS_SERVER_NAME, whoIsQueries);
-					ArrayList<WhoisQueryResults> whoisQueryResults =
-							whoisLookup.parseWhoisResponse(whoisLookupResponses);
-					
-					for (WhoisQueryResults results : whoisQueryResults) {
-						chainRunner = pendingChainsMap.get(results.getIpAddr());
-						domainToAnalyze = chainRunner.domainToAnalyze;
-											
-						Map<String, Feature> featuresMap = 
-								domainToAnalyze.getFeaturesMap();
-						
-						featuresMap.get("asNum").setValue(Integer.parseInt(results.getAsNum()));
-						featuresMap.get("bgpPrefix").setValue(results.getBgpPrefix());
-						featuresMap.get("cc").setValue(results.getCc());
-						featuresMap.get("asOnwer").setValue(results.getAsOnwer());
-					}
-				}
-				
-				/* flush all pending domains */
-				for (ChainRunnerWhoisQuery chainRunner : pendingChainsMap.values()) {
-					if(chainRunner != ChainRunnerWhoisQuery.this) {
-						chainRunner.setStatus(getStatus());
+					Record[] records = (Record[]) domainToAnalyze.getPropertiesMap().get("domainRecords");
+					if (records == null) {
 						chainRunner.flush();
+						continue;
 					}
+					
+					/* take the first entry */
+					pendingChainsMap.put(records[0].rdataToString(), chainRunner);
+					whoIsQueries.add(records[0].rdataToString());
 				}
-				
+				if (whoIsQueries.size() > 0) {
+					createWhoisQuery(pendingChainsMap, whoIsQueries);
+				}
 			} catch (Exception e) {
-				logger.error("caught exception ", e);
-				setStatus(ProcessingChain.chainStatus.ERROR);
+					logger.error("caught exception ", e);
+					setStatus(ProcessingChain.chainStatus.ERROR);
+			} finally {
+				for (ChainRunnerWhoisQuery chainRunner : pendingChainsMap.values()) {
+					chainRunner.setStatus(getStatus());
+					chainRunner.flush();
+				}
+				pendingChainsMap.clear();
+				whoIsQueries.clear();
 			}
-			
-			flush();
-			
-			return this;
 		}
-	}
+	
+		private void createWhoisQuery(
+				Map<String, ChainRunnerWhoisQuery> pendingChainsMap,
+				Set<String> whoIsQueries) throws UnknownHostException, IOException {
+				ChainRunnerWhoisQuery chainRunner;
+				
+				logger.info("creating a WhoIsQuery for " + whoIsQueries.size() + " entries");
+				
+				ArrayList<String> whoisLookupResponses = 
+						whoisLookup.bulkLookup(WHOIS_SERVER_NAME, whoIsQueries);
+				ArrayList<WhoisQueryResults> whoisQueryResults =
+						whoisLookup.parseWhoisResponse(whoisLookupResponses);
+				
+				for (WhoisQueryResults results : whoisQueryResults) {
+					chainRunner = pendingChainsMap.get(results.getIpAddr());
+					Map<String, Feature> featuresMap = 
+							chainRunner.domainToAnalyze.getFeaturesMap();
+					
+					featuresMap.get("asNum").setValue(Integer.parseInt(results.getAsNum()));
+					featuresMap.get("bgpPrefix").setValue(results.getBgpPrefix());
+					featuresMap.get("cc").setValue(results.getCc());
+					featuresMap.get("asOnwer").setValue(results.getAsOnwer());
+				}
+			}
+		}
 }

@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import weka.core.Attribute;
+import weka.core.FastVector;
+
 public class DomainToAnalyze {
 	private String domainName;
 	private Map<String, Feature> featuresMap = new LinkedHashMap<String, Feature>();
@@ -18,11 +21,24 @@ public class DomainToAnalyze {
 		BENIGN
 	}
 	
-	/**Creates a DomainToAnalyze
+	/**Creates a DomainToAnalyze with a known
+	 * classification
+	 * @param domainName the domain's name
+	 * @param classification the classification type
+	 */
+	public DomainToAnalyze (String domainName, 
+							Classification classification) {
+		this.domainName = domainName;
+		this.classification = classification;
+	}
+	
+	/**Creates a DomainToAnalyze with an unknown
+	 * classification
 	 * @param domainName the domain's name
 	 */
 	public DomainToAnalyze (String domainName) {
 		this.domainName = domainName;
+		this.classification = Classification.UNKNOWN;
 	}
 
 	/**Gets a map of features for the domain, to be used for data-mining
@@ -74,6 +90,15 @@ public class DomainToAnalyze {
 			featuresMap.put(feature.getName(), feature);
 		}
 		
+	}
+	
+	public Attribute classToAttribute() {
+	   FastVector fvClassVal = new FastVector();
+	   fvClassVal.addElement(Classification.MALICIOUS.toString());
+	   fvClassVal.addElement(Classification.BENIGN.toString());
+	   
+	   Attribute ClassAttribute = new Attribute("domainClassification", fvClassVal);
+	   return ClassAttribute;
 	}
 
 }
