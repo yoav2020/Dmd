@@ -37,7 +37,7 @@ public class BackEndServer {
 		dispatchQueue.add(e2);
 		DomainToAnalyze e3 = Factory.getFactory().getDmainToAnalyze("app.pho8.com", Classification.UNKNOWN);
 		dispatchQueue.add(e3);
-		DomainToAnalyze e4 = Factory.getFactory().getDmainToAnalyze("gamer,co.il", Classification.UNKNOWN);
+		DomainToAnalyze e4 = Factory.getFactory().getDmainToAnalyze("gamer.co.il", Classification.UNKNOWN);
 		dispatchQueue.add(e4);
 		
 		/* PLACE HOLDER END */
