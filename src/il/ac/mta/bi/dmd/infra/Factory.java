@@ -72,6 +72,7 @@ public final class Factory {
 	 * Gets a DomainToAnalyze object, pre-configured with a valid processing chain.
 	 * The features map includes all features collected from the chain
 	 * @param domainName the domain name
+	 * @param classification the domain class
 	 * @return the nominal feature
 	 */
 	public DomainToAnalyze getDmainToAnalyze(String domainName, 

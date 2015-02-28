@@ -19,11 +19,14 @@ import weka.core.SparseInstance;
  * the arff file out of the domain features, however it doesn't fill up any features but only 
  * properties. These are:
  * 
- * "fvWekaAttributes" - the arff structures attributes, without the values
+ * "fvWekaAttributes" - the arff structures attributes, without the values;
  * "fvWekaAttributesHash" - the hash value of the arff attribute (actually, the hashcode is called
  * on the stringed version of the arff (the arff itself is a text format);
  * "instanceData" - the feature values for the classification. These match the attributes in the 
- * arff file
+ * arff file;
+ * 
+ * More info about the arff file in general can be found here:
+ * http://weka.wikispaces.com/ARFF+%28stable+version%29
  */
 
 public class ChainRunnerArffCreator extends ProcessChain {
