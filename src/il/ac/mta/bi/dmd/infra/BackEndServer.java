@@ -28,13 +28,13 @@ public class BackEndServer {
 		DomainToAnalyze b1 = Factory.getFactory().getDmainToAnalyze("ynet.co.il", Classification.BENIGN);
 		dispatchQueue.add(b1);
 		DomainToAnalyze c1 = Factory.getFactory().getDmainToAnalyze("mobile.bitterstrawberry.org", Classification.MALICIOUS);
-		//dispatchQueue.add(c1);
+		dispatchQueue.add(c1);
 		DomainToAnalyze d1 = Factory.getFactory().getDmainToAnalyze("microsoft.com", Classification.BENIGN);
 		dispatchQueue.add(d1);
 		DomainToAnalyze e1 = Factory.getFactory().getDmainToAnalyze("www.cellphoneupdated.com", Classification.MALICIOUS);
-		//dispatchQueue.add(e1);
+		dispatchQueue.add(e1);
 		DomainToAnalyze e2 = Factory.getFactory().getDmainToAnalyze("app.pho8.com", Classification.MALICIOUS);
-		//dispatchQueue.add(e2);
+		dispatchQueue.add(e2);
 		DomainToAnalyze e3 = Factory.getFactory().getDmainToAnalyze("app.pho8.com", Classification.UNKNOWN);
 		dispatchQueue.add(e3);
 		DomainToAnalyze e4 = Factory.getFactory().getDmainToAnalyze("gamer.co.il", Classification.UNKNOWN);

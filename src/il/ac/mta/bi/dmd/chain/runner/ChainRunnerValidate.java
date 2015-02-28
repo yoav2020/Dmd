@@ -9,7 +9,8 @@ import org.apache.log4j.Logger;
 /**
  * This chain runner validates the domain name, and confirm it is legal and stands for standards. 
  * It doesn't fill any features in the features map, but instead fails the chain to end the 
- * domain handling prematurely
+ * domain handling prematurely. The chain is based on org.apache.commons.validator.routines.DomainValidator
+ * domain validators
  */
 
 public class ChainRunnerValidate extends ProcessChain {
