@@ -37,12 +37,10 @@ public class ChainRunnerArffCreator extends ProcessChain {
 			setStatus(ProcessingChain.chainStatus.ERROR);
 		}
 		
-		String hello = "hello";
-		logger.info(hello.hashCode());
-		
 		flush();
 	}
 	
+	/* convert all data to numeric */
 	private void createDataInstance() {
 		Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
 		Instance instanceData = new SparseInstance(featuresMap.size());
@@ -63,14 +61,16 @@ public class ChainRunnerArffCreator extends ProcessChain {
 					instanceData.setValue(feature.toAttribute(), 
 							((String)feature.getValue()).hashCode());
 				} else {
-					instanceData.setValue(feature.toAttribute(), "");
+					instanceData.setValue(feature.toAttribute(), "".hashCode());
 				}
 				break;
 			default:
 				logger.warn("attribute not supported");
 			}
-			logger.info(feature.getName() + ": " + feature.getValue());
+			logger.info(feature.getName() + ": " + instanceData.value(feature.toAttribute()));
 		}
+		
+		/* add classification for unknown domains only */
 		if (domainToAnalyze.getClassification() != Classification.UNKNOWN) {
 			instanceData.setValue(domainToAnalyze.classToAttribute(), 
 								  domainToAnalyze.getClassification().toString());
@@ -92,8 +92,8 @@ public class ChainRunnerArffCreator extends ProcessChain {
 			fvWekaAttributes.addElement(feature.toAttribute());
 			fvWekaAtrributeString.append(feature.toAttribute().toString());
 		}
-		
 		logger.info("adding attribute to model: " + domainToAnalyze.classToAttribute().toString());
+		
 		fvWekaAttributes.addElement(domainToAnalyze.classToAttribute());
 		fvWekaAtrributeString.append(domainToAnalyze.classToAttribute().toString());
 	   

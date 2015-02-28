@@ -19,7 +19,8 @@ public abstract class ProcessChain {
 	public abstract void run();
 	
 	protected void flush() {
-		logger.info("putting back: " + domainToAnalyze.getDomainName() + " (" + getChainName() +")");
+		logger.info("putting back: " + domainToAnalyze.getDomainName() +
+					" instance=" + domainToAnalyze + " (chain=" + getChainName() +")");
 		dispatchQueue.add(domainToAnalyze);
 	}
 	

@@ -21,22 +21,22 @@ public class Dispatacher {
 			try {
 				DomainToAnalyze domainToAnalyze = dispatchQueue.take();
 				
-				logger.info("processing the following domain: " + domainToAnalyze.getDomainName());
-				
 				ProcessingChain chain = domainToAnalyze.getChain();
 				ProcessChain nextChain = chain.next();
 				
 				if (nextChain == null) {
 					if (chain.getStatus() == ProcessingChain.chainStatus.ERROR) {
-						logger.warn("domain handling finished with errors, last chain is: " +
+						logger.warn(domainToAnalyze.getDomainName() + " handling finished with errors, last chain is: " +
 								chain.getLastChain().getChainName());
 					} else {
-						logger.info("domain handling finished successfully");
+						logger.info(domainToAnalyze.getDomainName() + " handling finished successfully");
 					}
 					continue;
 				}
 	
-				logger.info("next chain is " + "(" + nextChain.getChainName() + ")");
+				logger.info(domainToAnalyze.getDomainName() + " next chain is " + 
+				"(" + nextChain.getChainName() + ")");
+				
 				nextChain.setDispatchQueue(dispatchQueue);
 				nextChain.setDomainToAnalyze(domainToAnalyze);
 			

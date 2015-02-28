@@ -1,7 +1,6 @@
 package il.ac.mta.bi.dmd.common;
 
 import weka.core.Attribute;
-import weka.core.FastVector;
 
 public class Feature {
 	
@@ -43,17 +42,16 @@ public class Feature {
 		return type;
 	}
 	
-	/**Returns the feature as an Arff attribute for data-mining
+	/**Returns the feature as an Arff attribute for data-mining.
+	 * As most classifiers are suitable to work with numeric values,
+	 * the attribute is returned in num type
 	 */
 	public Attribute toAttribute() {
 		Attribute attr = null;
 		
 		switch (type) {
 		case INTEGER:
-			attr =  new Attribute(name);
-			break;
-		case NOMINAL: /* not supported yet */
-			break;
+		case NOMINAL:
 		case STRING:
 		default:
 			attr =  new Attribute(name);

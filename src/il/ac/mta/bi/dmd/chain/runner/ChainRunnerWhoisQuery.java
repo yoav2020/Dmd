@@ -71,13 +71,15 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	 * to the object called so it can be used to check return value */
 	private class ChainRunnerWhoisQueryWorker implements Runnable{	
 		
-		Map<String,ChainRunnerWhoisQuery> pendingChainsMap = new HashMap<>();
+		Map<String,ArrayList<ChainRunnerWhoisQuery>> pendingChainsMap = 
+				new HashMap<>();
 		Set<String> whoIsQueries = new HashSet<>();
 				
 		@Override
 		public void run() {		
 			try {
 				ChainRunnerWhoisQuery chainRunner = null;
+				ArrayList<ChainRunnerWhoisQuery> pendingChainRunners = null;
 				setStatus(ProcessingChain.chainStatus.OK);
 					
 				while (inQueue.isEmpty() == false && whoIsQueries.size() < MAX_QUERIES_IN_REQUEST) {
@@ -92,8 +94,16 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 						continue;
 					}
 					
-					/* take the first entry */
-					pendingChainsMap.put(records[0].rdataToString(), chainRunner);
+					/* take the first entry. In case a single IP address can
+					 * match more than one domain, we keep it in a list
+					 */
+					pendingChainRunners = pendingChainsMap.get(records[0].rdataToString());
+					if (pendingChainRunners == null) {
+						pendingChainRunners = new ArrayList<>();
+					}
+					pendingChainRunners.add(chainRunner);
+					
+					pendingChainsMap.put(records[0].rdataToString(), pendingChainRunners);
 					whoIsQueries.add(records[0].rdataToString());
 				}
 				if (whoIsQueries.size() > 0) {
@@ -103,9 +113,11 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 					logger.error("caught exception ", e);
 					setStatus(ProcessingChain.chainStatus.ERROR);
 			} finally {
-				for (ChainRunnerWhoisQuery chainRunner : pendingChainsMap.values()) {
-					chainRunner.setStatus(getStatus());
-					chainRunner.flush();
+				for (ArrayList<ChainRunnerWhoisQuery> chainRunners : pendingChainsMap.values()) {
+					for (ChainRunnerWhoisQuery chainRunner : chainRunners) {
+						chainRunner.setStatus(getStatus());
+						chainRunner.flush();
+					}
 				}
 				pendingChainsMap.clear();
 				whoIsQueries.clear();
@@ -113,9 +125,9 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 		}
 	
 		private void createWhoisQuery(
-				Map<String, ChainRunnerWhoisQuery> pendingChainsMap,
+				Map<String, ArrayList<ChainRunnerWhoisQuery>> pendingChainsMap,
 				Set<String> whoIsQueries) throws UnknownHostException, IOException {
-				ChainRunnerWhoisQuery chainRunner;
+				ArrayList<ChainRunnerWhoisQuery> pendingChainRunners = null;
 				
 				logger.info("creating a WhoIsQuery for " + whoIsQueries.size() + " entries");
 				
@@ -125,14 +137,19 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 						whoisLookup.parseWhoisResponse(whoisLookupResponses);
 				
 				for (WhoisQueryResults results : whoisQueryResults) {
-					chainRunner = pendingChainsMap.get(results.getIpAddr());
-					Map<String, Feature> featuresMap = 
-							chainRunner.domainToAnalyze.getFeaturesMap();
+					pendingChainRunners = pendingChainsMap.get(results.getIpAddr());
 					
-					featuresMap.get("asNum").setValue(Integer.parseInt(results.getAsNum()));
-					featuresMap.get("bgpPrefix").setValue(results.getBgpPrefix());
-					featuresMap.get("cc").setValue(results.getCc());
-					featuresMap.get("asOnwer").setValue(results.getAsOnwer());
+					/* update all chains relevant to this whois query */
+					
+					for (ChainRunnerWhoisQuery chainRunner : pendingChainRunners) {
+						Map<String, Feature> featuresMap = 
+								chainRunner.domainToAnalyze.getFeaturesMap();
+						
+						featuresMap.get("asNum").setValue(Integer.parseInt(results.getAsNum()));
+						featuresMap.get("bgpPrefix").setValue(results.getBgpPrefix());
+						featuresMap.get("cc").setValue(results.getCc());
+						featuresMap.get("asOnwer").setValue(results.getAsOnwer());
+					}
 				}
 			}
 		}
