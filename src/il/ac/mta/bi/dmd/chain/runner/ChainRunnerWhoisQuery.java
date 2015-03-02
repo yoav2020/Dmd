@@ -58,7 +58,7 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	 */
 	private void firstChainInit() {
 		Factory.getFactory().getExecutorForPerodicRunnableTask(new ChainRunnerWhoisQueryWorker(), 
-															   1, 1, TimeUnit.SECONDS);
+															   5, 5, TimeUnit.SECONDS);
 		isConsumerRunnig = true;
 	}
 	
@@ -127,8 +127,6 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 		private void createWhoisQuery(
 				Map<String, ArrayList<ChainRunnerWhoisQuery>> pendingChainsMap,
 				Set<String> whoIsQueries) throws UnknownHostException, IOException {
-				ArrayList<ChainRunnerWhoisQuery> pendingChainRunners = null;
-				
 				logger.info("creating a WhoIsQuery for " + whoIsQueries.size() + " entries");
 				
 				ArrayList<String> whoisLookupResponses = 
@@ -136,7 +134,15 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 				ArrayList<WhoisQueryResults> whoisQueryResults =
 						whoisLookup.parseWhoisResponse(whoisLookupResponses);
 				
-				for (WhoisQueryResults results : whoisQueryResults) {
+				parseWhoisQueryResults(pendingChainsMap, whoisQueryResults);
+			}
+
+		private void parseWhoisQueryResults(
+				Map<String, ArrayList<ChainRunnerWhoisQuery>> pendingChainsMap,
+				ArrayList<WhoisQueryResults> whoisQueryResults) {
+			ArrayList<ChainRunnerWhoisQuery> pendingChainRunners;
+			for (WhoisQueryResults results : whoisQueryResults) {
+				try {
 					pendingChainRunners = pendingChainsMap.get(results.getIpAddr());
 					
 					/* update all chains relevant to this whois query */
@@ -150,7 +156,10 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 						featuresMap.get("cc").setValue(results.getCc());
 						featuresMap.get("asOnwer").setValue(results.getAsOnwer());
 					}
+				} catch (Exception e) {
+					logger.warn("failed handling results", e);
 				}
 			}
+		}
 		}
 }

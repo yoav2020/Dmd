@@ -46,16 +46,13 @@ public class ClassifierWrapper {
 	public void updateClassifier(Instance instanceData) throws Exception {
 		totalClassifications ++;
 		
-		instanceData.setDataset(dataSet);
 		updateableClassifier.updateClassifier(instanceData);
 	}
 	
 	public double[] classifyInstance(Instance instanceData) throws Exception {
 		totalClassifications ++;
 		
-		instanceData.setDataset(dataSet);
 		double[] result = updateableClassifier.distributionForInstance(instanceData);
-
 		return result;
 	}
 	

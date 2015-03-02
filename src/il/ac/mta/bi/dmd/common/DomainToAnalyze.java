@@ -32,6 +32,26 @@ public class DomainToAnalyze {
 		this.classification = classification;
 	}
 	
+	/**Creates a DomainToAnalyze with a known
+	 * classification
+	 * @param domainName the domain's name
+	 * @param classification the classification type
+	 */
+	public DomainToAnalyze (String domainName, 
+							String classification) {
+		this.domainName = domainName;
+		this.classification = Classification.UNKNOWN;
+
+		if (classification.equals("MALICIOUS")) {
+			this.classification = Classification.MALICIOUS;
+			return;
+		}
+		if (classification.equals("BENIGN")) {
+			this.classification = Classification.BENIGN;
+			return;
+		}
+	}
+	
 	/**Creates a DomainToAnalyze with an unknown
 	 * classification
 	 * @param domainName the domain's name
@@ -84,6 +104,9 @@ public class DomainToAnalyze {
 		return propertiesMap;
 	}
 	
+	/**Insert all features collected by all chains attached to the domain 
+	 * into a features map, which maps between the feature name and it's value
+	 */
 	public void init() {
 		ArrayList<Feature> allFeaturesFromChain = chain.getAllFeaturesFromChain();
 		for (Feature feature : allFeaturesFromChain) {

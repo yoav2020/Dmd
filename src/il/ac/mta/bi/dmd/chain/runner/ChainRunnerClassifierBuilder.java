@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import weka.classifiers.Evaluation;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -79,14 +78,9 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 	}
 
 	private ClassifierWrapper generateClassifier() throws Exception {
-		FastVector fvWekaAttribute = 
-				(FastVector) domainToAnalyze.getPropertiesMap().get("fvWekaAttributes");
-		Instances dataSet = 
-				new Instances("Domain class relation", fvWekaAttribute, 0);
-		ClassifierWrapper classifierWrapper = 
-				new ClassifierWrapper();
+		Instances dataSet = (Instances) domainToAnalyze.getPropertiesMap().get("dataSet");
+		ClassifierWrapper classifierWrapper = new ClassifierWrapper();
 
-		dataSet.setClassIndex(dataSet.numAttributes()-1);
 		classifierWrapper.buildClassifier(dataSet);
 		classifierWrapper.setDataSet(dataSet);
 		classifierWrapper.setEval(new Evaluation(dataSet));

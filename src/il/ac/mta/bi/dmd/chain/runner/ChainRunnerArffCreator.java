@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import weka.core.FastVector;
 import weka.core.Instance;
+import weka.core.Instances;
 import weka.core.SparseInstance;
 
 /**
@@ -34,6 +35,7 @@ public class ChainRunnerArffCreator extends ProcessChain {
 
 	private FastVector fvWekaAttributes;
 	private Integer fvWekaAttributesHash;
+	private Instances dataSet;
 	private Instance instanceData;
 	
 	public ChainRunnerArffCreator() {
@@ -48,6 +50,7 @@ public class ChainRunnerArffCreator extends ProcessChain {
 			domainToAnalyze.getPropertiesMap().put("fvWekaAttributes", fvWekaAttributes);
 			domainToAnalyze.getPropertiesMap().put("fvWekaAttributesHash", fvWekaAttributesHash);
 			domainToAnalyze.getPropertiesMap().put("instanceData", instanceData);
+			domainToAnalyze.getPropertiesMap().put("dataSet", dataSet);
 		} catch (Exception e) {
 			logger.error("caught exception ", e);
 			setStatus(ProcessingChain.chainStatus.ERROR);
@@ -60,39 +63,43 @@ public class ChainRunnerArffCreator extends ProcessChain {
 	private void createDataInstance() {
 		Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
 		Instance instanceData = new SparseInstance(featuresMap.size());
+		Instances dataSet = new Instances("Domain class relation", fvWekaAttributes, 0);
+		int attIndex = 0;
+		instanceData.setDataset(dataSet);
+		dataSet.setClassIndex(dataSet.numAttributes()-1);
 		
 		for (Feature feature : featuresMap.values()) {
 			switch (feature.getType()) {
 			case INTEGER:
 				if (feature.getValue() != null) {
-					instanceData.setValue(feature.toAttribute(), 
-							(Integer)feature.getValue());
+					instanceData.setValue(attIndex, (Integer)feature.getValue());
 				} else {
-					instanceData.setValue(feature.toAttribute(), 0);
+					instanceData.setValue(attIndex, 0);
 				}
 				break;
 			case NOMINAL:
 			case STRING:
 				if (feature.getValue() != null) {
-					instanceData.setValue(feature.toAttribute(), 
-							((String)feature.getValue()).hashCode());
+					instanceData.setValue(attIndex, ((String)feature.getValue()).hashCode());
 				} else {
-					instanceData.setValue(feature.toAttribute(), "".hashCode());
+					instanceData.setValue(attIndex, "".hashCode());
 				}
 				break;
 			default:
 				logger.warn("attribute not supported");
 			}
-			logger.info(feature.getName() + ": " + instanceData.value(feature.toAttribute()));
+			logger.info(feature.getName() + ": " + feature.getValue());
+			attIndex ++;
 		}
 		
 		/* add classification for unknown domains only */
 		if (domainToAnalyze.getClassification() != Classification.UNKNOWN) {
-			instanceData.setValue(domainToAnalyze.classToAttribute(), 
-								  domainToAnalyze.getClassification().toString());
+			instanceData.setValue(attIndex, domainToAnalyze.getClassification().toString());
 		}
+		
 		logger.info("classification " + ": " + domainToAnalyze.getClassification().toString());
 		
+		this.dataSet = dataSet;
 		this.instanceData = instanceData;
 		
 		logger.info("created data instance successfully!");
@@ -108,6 +115,7 @@ public class ChainRunnerArffCreator extends ProcessChain {
 			fvWekaAttributes.addElement(feature.toAttribute());
 			fvWekaAtrributeString.append(feature.toAttribute().toString());
 		}
+		/* add the class attribute last */
 		logger.info("adding attribute to model: " + domainToAnalyze.classToAttribute().toString());
 		
 		fvWekaAttributes.addElement(domainToAnalyze.classToAttribute());

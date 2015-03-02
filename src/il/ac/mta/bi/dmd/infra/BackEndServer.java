@@ -2,6 +2,7 @@ package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
+import il.ac.mta.bi.dmd.data.sources.SimpleFileDataSource;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -18,33 +19,28 @@ public class BackEndServer {
 	public void start() {
 		logger.info("backend start");
 		
+		//initFetcher();
+		
 		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDmainToAnalyze("cnn.com", Classification.BENIGN);
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("cnn.com", Classification.BENIGN);
 		dispatchQueue.add(a1);
-		DomainToAnalyze a2 = Factory.getFactory().getDmainToAnalyze("gamespot.com", Classification.BENIGN);
-		dispatchQueue.add(a2);
-		DomainToAnalyze a3 = Factory.getFactory().getDmainToAnalyze("nana.co.il", Classification.BENIGN);
-		dispatchQueue.add(a3);
-		DomainToAnalyze b1 = Factory.getFactory().getDmainToAnalyze("ynet.co.il", Classification.BENIGN);
-		dispatchQueue.add(b1);
-		DomainToAnalyze c1 = Factory.getFactory().getDmainToAnalyze("mobile.bitterstrawberry.org", Classification.MALICIOUS);
-		dispatchQueue.add(c1);
-		DomainToAnalyze d1 = Factory.getFactory().getDmainToAnalyze("microsoft.com", Classification.BENIGN);
-		dispatchQueue.add(d1);
-		DomainToAnalyze e1 = Factory.getFactory().getDmainToAnalyze("www.cellphoneupdated.com", Classification.MALICIOUS);
-		dispatchQueue.add(e1);
-		DomainToAnalyze e2 = Factory.getFactory().getDmainToAnalyze("app.pho8.com", Classification.MALICIOUS);
-		dispatchQueue.add(e2);
-		DomainToAnalyze e3 = Factory.getFactory().getDmainToAnalyze("app.pho8.com", Classification.UNKNOWN);
-		dispatchQueue.add(e3);
-		DomainToAnalyze e4 = Factory.getFactory().getDmainToAnalyze("gamer.co.il", Classification.UNKNOWN);
-		dispatchQueue.add(e4);
 		
 		/* PLACE HOLDER END */
 		dispatcher.run();
 
 		logger.info("backend end");
 		fini();
+	}
+
+	private void initFetcher() {
+		Fetcher fetcher = Fetcher.getFetcher();
+		fetcher.setDispatchQueue(dispatchQueue);
+		fetcher.init();
+		
+		/* SimpleFileDataSource */
+		SimpleFileDataSource dataSource = new SimpleFileDataSource();
+		dataSource.setFileName("data\\input.txt");
+		fetcher.addSource(dataSource);
 	}
 	
 	protected void fini() {

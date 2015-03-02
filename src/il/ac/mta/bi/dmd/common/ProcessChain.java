@@ -3,7 +3,6 @@ package il.ac.mta.bi.dmd.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
 
@@ -38,10 +37,6 @@ public abstract class ProcessChain {
 
 	protected void setStatus(ProcessingChain.chainStatus status) {
 		this.status = status;
-	}
-
-	public void setDispatchQueue(LinkedBlockingQueue<DomainToAnalyze> dispatchQueue) {
-		this.dispatchQueue = dispatchQueue;
 	}
 
 	public void setDomainToAnalyze(DomainToAnalyze domainToAnalyze) {

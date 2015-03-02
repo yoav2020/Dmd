@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 public final class Factory {	
 	private static Logger 	logger 	= Logger.getLogger(BackEndServer.class);
-	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(128);
+	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(16);
 	private static Factory 	theFactory = null;
 	
 	private Factory() {
@@ -75,8 +75,28 @@ public final class Factory {
 	 * @param classification the domain class
 	 * @return the nominal feature
 	 */
-	public DomainToAnalyze getDmainToAnalyze(String domainName, 
+	public DomainToAnalyze getDomainToAnalyze(String domainName, 
 											 Classification classification) {
+		logger.info("creating domain object for: " + domainName);
+		
+		ProcessingChain processingChain = new ProcessingChain();
+		DomainToAnalyze domainToAnalyze = new DomainToAnalyze(domainName, classification);
+		addChainRunners(processingChain);
+		domainToAnalyze.setChain(processingChain);
+		domainToAnalyze.init();
+		
+		return domainToAnalyze;
+	}
+	
+	/**
+	 * Gets a DomainToAnalyze object, pre-configured with a valid processing chain.
+	 * The features map includes all features collected from the chain
+	 * @param domainName the domain name
+	 * @param classification the domain class
+	 * @return the nominal feature
+	 */
+	public DomainToAnalyze getDomainToAnalyze(String domainName,
+											  String classification) {
 		logger.info("creating domain object for: " + domainName);
 		
 		ProcessingChain processingChain = new ProcessingChain();
