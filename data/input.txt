@@ -15,4 +15,3 @@ yahoo.co.jp BENIGN
 linkedin.com BENIGN
 blogfa.com BENIGN
 mrskin.com BENIGN
-msn.co.il UNKNOWN
