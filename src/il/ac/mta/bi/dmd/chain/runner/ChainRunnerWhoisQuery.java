@@ -35,8 +35,7 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	private static final WhoisLookup whoisLookup = new WhoisLookup();
 	private static final Integer MAX_QUERIES_IN_REQUEST = 1024;
 	private static final String WHOIS_SERVER_NAME = "whois.cymru.com";
-	private static final Integer MAX_THREAD_COUNT = 2;
-	
+
 	private static final LinkedBlockingQueue<ChainRunnerWhoisQuery> inQueue =
 			new LinkedBlockingQueue<>();
 	private static Boolean isConsumerRunnig = false;
@@ -57,10 +56,8 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	 * thread, which creates the actual queries coming from all other ChainRunnerWhoisQueries
 	 */
 	private void firstChainInit() {
-		for (int i = 0; i < MAX_THREAD_COUNT; i ++ ) {
-			Factory.getFactory().execFixedPerodicRunnableTask(new ChainRunnerWhoisQueryWorker(),
-					1, 3, TimeUnit.SECONDS);
-		}
+		Factory.getFactory().execFixedPerodicRunnableTask(new ChainRunnerWhoisQueryConsumer(),
+				1, 3, TimeUnit.SECONDS);
 		isConsumerRunnig = true;
 	}
 	
@@ -71,7 +68,7 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 
 	/* internal private class for worker thread; returns a Future reference
 	 * to the object called so it can be used to check return value */
-	private class ChainRunnerWhoisQueryWorker implements Runnable{	
+	private class ChainRunnerWhoisQueryConsumer implements Runnable{	
 		@Override
 		public void run() {
 			Map<String,ArrayList<ChainRunnerWhoisQuery>> pendingChainsMap = 

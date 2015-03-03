@@ -19,10 +19,11 @@ public class BackEndServer {
 	public void start() {
 		logger.info("backend start");
 		
-		initFetcher();
+		/* edit \data\input.txt to load domains from files by fetcher */
+		//initFetcher();
 		
 		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("mobile.bitterstrawberry.org", Classification.UNKNOWN);
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("microsoft.com", Classification.UNKNOWN);
 		dispatchQueue.add(a1);
 		
 		/* PLACE HOLDER END */

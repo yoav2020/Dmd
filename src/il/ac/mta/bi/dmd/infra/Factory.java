@@ -145,7 +145,7 @@ public final class Factory {
 	 * @param unit - time unit for the delay 
 	 * @return future object returned from the completed task
 	 */
-	public <T> Future<T> getExecutorForCallableTask(Callable<T> task, long delay, TimeUnit unit) {
+	public <T> Future<T> getExecutorForDelayedCallableTask(Callable<T> task, long delay, TimeUnit unit) {
 		logger.info("executing task in " + delay + " " + unit.toString() + " task " + task.toString());
 		return executorService.schedule(task, delay, unit);
 	}
@@ -159,7 +159,6 @@ public final class Factory {
 		logger.info("executing task " + task.toString());
 		return executorService.submit(task);
 	}
-	
 	
 	/**
 	 * Executes a scheduled Runnable task to run in a separate thread at periodically, fixed times.
