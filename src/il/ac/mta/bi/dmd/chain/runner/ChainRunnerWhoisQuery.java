@@ -4,6 +4,7 @@ import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
+import il.ac.mta.bi.dmd.common.ProcessingChain.chainStatus;
 import il.ac.mta.bi.dmd.infra.Factory;
 import il.ac.mta.bi.dmd.lookup.WhoisLookup;
 import il.ac.mta.bi.dmd.lookup.WhoisQueryResults;
@@ -34,11 +35,10 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	private static final WhoisLookup whoisLookup = new WhoisLookup();
 	private static final Integer MAX_QUERIES_IN_REQUEST = 1024;
 	private static final String WHOIS_SERVER_NAME = "whois.cymru.com";
+	private static final Integer MAX_THREAD_COUNT = 2;
 	
-	/* members used by all chain instances */
 	private static final LinkedBlockingQueue<ChainRunnerWhoisQuery> inQueue =
 			new LinkedBlockingQueue<>();
-			
 	private static Boolean isConsumerRunnig = false;
 	
 	public ChainRunnerWhoisQuery() {
@@ -57,8 +57,10 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	 * thread, which creates the actual queries coming from all other ChainRunnerWhoisQueries
 	 */
 	private void firstChainInit() {
-		Factory.getFactory().getExecutorForPerodicRunnableTask(new ChainRunnerWhoisQueryWorker(), 
-															   5, 5, TimeUnit.SECONDS);
+		for (int i = 0; i < MAX_THREAD_COUNT; i ++ ) {
+			Factory.getFactory().execFixedPerodicRunnableTask(new ChainRunnerWhoisQueryWorker(),
+					1, 3, TimeUnit.SECONDS);
+		}
 		isConsumerRunnig = true;
 	}
 	
@@ -70,17 +72,16 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	/* internal private class for worker thread; returns a Future reference
 	 * to the object called so it can be used to check return value */
 	private class ChainRunnerWhoisQueryWorker implements Runnable{	
-		
-		Map<String,ArrayList<ChainRunnerWhoisQuery>> pendingChainsMap = 
-				new HashMap<>();
-		Set<String> whoIsQueries = new HashSet<>();
-				
 		@Override
-		public void run() {		
+		public void run() {
+			Map<String,ArrayList<ChainRunnerWhoisQuery>> pendingChainsMap = 
+					new HashMap<>();
+			Set<String> whoIsQueries = new HashSet<>();
+			chainStatus chainRunnerStatus = ProcessingChain.chainStatus.OK;
+					
 			try {
 				ChainRunnerWhoisQuery chainRunner = null;
 				ArrayList<ChainRunnerWhoisQuery> pendingChainRunners = null;
-				setStatus(ProcessingChain.chainStatus.OK);
 					
 				while (inQueue.isEmpty() == false && whoIsQueries.size() < MAX_QUERIES_IN_REQUEST) {
 					chainRunner = inQueue.take();
@@ -111,11 +112,11 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 				}
 			} catch (Exception e) {
 					logger.error("caught exception ", e);
-					setStatus(ProcessingChain.chainStatus.ERROR);
+					chainRunnerStatus = ProcessingChain.chainStatus.ERROR;
 			} finally {
 				for (ArrayList<ChainRunnerWhoisQuery> chainRunners : pendingChainsMap.values()) {
 					for (ChainRunnerWhoisQuery chainRunner : chainRunners) {
-						chainRunner.setStatus(getStatus());
+						chainRunner.setStatus(chainRunnerStatus);
 						chainRunner.flush();
 					}
 				}

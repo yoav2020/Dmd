@@ -25,7 +25,7 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 	static Logger 	logger = Logger.getLogger(ChainRunnerClassifierBuilder.class);
 	
 	private static Map<Integer,ClassifierWrapper> classifierMap = new HashMap<>();
-	private static final Integer CLASS_TEST_RATIO = 4;
+	private static final Integer CLASS_TEST_RATIO = 128;
 	private static final String MODEL_OUT_DIR = "data";
 	
 	public ChainRunnerClassifierBuilder() {
@@ -43,7 +43,7 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 			
 			ClassifierWrapper classifierWrapper = classifierMap.get(fvWekaAttributesHash);
 			if (classifierWrapper == null) {
-				classifierWrapper = generateClassifier();
+				classifierWrapper = getClassifier();
 				classifierMap.put(fvWekaAttributesHash, classifierWrapper);
 			}		
 			
@@ -87,19 +87,30 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 		}
 	}
 
-	private ClassifierWrapper generateClassifier() throws Exception {
+	private ClassifierWrapper getClassifier() throws Exception {
 		Instances dataSet = (Instances) domainToAnalyze.getPropertiesMap().get("dataSet");
-		ClassifierWrapper classifierWrapper = new ClassifierWrapper();
 		Integer classifierCode = (Integer) domainToAnalyze.getPropertiesMap().get("fvWekaAttributesHash");
 
+		ClassifierWrapper classifierWrapper = generateClassifier(dataSet, classifierCode);
+		try {
+			classifierWrapper.deSerialize();
+		} catch (Exception e) {
+			logger.error("failed to deserialize model", e);
+		}
+		
+		logger.info("classifier created successfully!");
+		
+		return classifierWrapper;
+	}
+
+	private ClassifierWrapper generateClassifier(Instances dataSet,
+			Integer classifierCode) throws Exception {
+		ClassifierWrapper classifierWrapper = new ClassifierWrapper();
 		classifierWrapper.buildClassifier(dataSet);
 		classifierWrapper.setDataSet(dataSet);
 		classifierWrapper.setEval(new Evaluation(dataSet));
 		classifierWrapper.setModelOutputDir(MODEL_OUT_DIR);
 		classifierWrapper.setClassifierCode(classifierCode);
-		
-		logger.info("classifier created successfully!");
-		
 		return classifierWrapper;
 	}
 

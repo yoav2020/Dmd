@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 public final class Factory {	
 	private static Logger 	logger 	= Logger.getLogger(BackEndServer.class);
-	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(16);
+	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(64);
 	private static Factory 	theFactory = null;
 	
 	private Factory() {
@@ -160,17 +160,28 @@ public final class Factory {
 		return executorService.submit(task);
 	}
 	
+	
 	/**
-	 * Executes a scheduled task to run in a separate thread at periodically, fixed times
-	 * @param task - an object that performs the task when called
+	 * Executes a scheduled Runnable task to run in a separate thread at periodically, fixed times.
+	 * When executed, the task will repeat only after it's last iteration has completed
+	 * @param task - an object that performs the task when executed
 	 * @param initDelay - delay for initial execution
 	 * @param delay - delay between task executions
 	 * @param unit - time unit for the delay 
 	 */
-	public void getExecutorForPerodicRunnableTask(Runnable task, long initDelay, long delay, TimeUnit unit) {
+	public void execFixedPerodicRunnableTask(Runnable task, long initDelay, long delay, TimeUnit unit) {
 		logger.info("executing task in " + initDelay + " " + unit.toString() + " periodically " + 
 				delay + " " + unit.toString() + " task " + task.toString());
 		executorService.scheduleWithFixedDelay(task, delay, delay, unit); 
+	}
+	
+	/**
+	 * Executes a Runnable task to run in a separate thread
+	 * @param task - an object that performs the task when executed
+	 */
+	public void execForRunnableTask(Runnable task) {
+		logger.info("executing task " + task.toString());
+		executorService.execute(task);
 	}
 	
 	/**

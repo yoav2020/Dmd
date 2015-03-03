@@ -88,7 +88,8 @@ public class ChainRunnerArffCreator extends ProcessChain {
 			default:
 				logger.warn("attribute not supported");
 			}
-			logger.info(feature.getName() + ": " + feature.getValue());
+			logger.info(feature.getName() + ": " + feature.getValue() + " ; internal val=" +
+						instanceData.value(attIndex));
 			attIndex ++;
 		}
 		

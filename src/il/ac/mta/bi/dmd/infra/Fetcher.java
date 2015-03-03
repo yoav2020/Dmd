@@ -37,7 +37,7 @@ public class Fetcher implements Runnable {
 	
 	public void init() {
 		logger.info("fetcher started");
-		Factory.getFactory().getExecutorForPerodicRunnableTask(this, 0, 2, TimeUnit.SECONDS);
+		Factory.getFactory().execFixedPerodicRunnableTask(this, 0, 2, TimeUnit.SECONDS);
 	}
 	
 	private Fetcher(){

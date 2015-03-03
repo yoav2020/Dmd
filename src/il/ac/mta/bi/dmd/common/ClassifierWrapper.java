@@ -1,9 +1,9 @@
 package il.ac.mta.bi.dmd.common;
 
-import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
-
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.log4j.Logger;
@@ -82,6 +82,26 @@ public class ClassifierWrapper {
 
 	public Integer getTotalClassifications() {
 		return totalClassifications;
+	}
+	
+	public void deSerialize() throws ClassNotFoundException, IOException {
+		 // deserialize model
+		String modelFullPathName = classifierCode + ".model";
+		modelFullPathName = modelOutputDir + "\\" + modelFullPathName;
+		
+		logger.info("reading model from " + modelFullPathName);
+		
+		java.io.File fileModel = new java.io.File(modelFullPathName);
+		
+		if(fileModel.exists() == false) {
+			return;
+		}
+		
+		logger.info("deserializing model");
+		
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileModel));
+		updateableClassifier = (NaiveBayesUpdateable) ois.readObject();
+		ois.close();
 	}
 	
 	public void serialize() throws IOException {

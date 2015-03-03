@@ -22,7 +22,7 @@ public class BackEndServer {
 		initFetcher();
 		
 		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("cnn.com", Classification.BENIGN);
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("mobile.bitterstrawberry.org", Classification.UNKNOWN);
 		dispatchQueue.add(a1);
 		
 		/* PLACE HOLDER END */
