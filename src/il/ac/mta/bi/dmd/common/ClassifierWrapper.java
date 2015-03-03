@@ -1,5 +1,13 @@
 package il.ac.mta.bi.dmd.common;
 
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import org.apache.log4j.Logger;
+
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Instance;
@@ -23,6 +31,10 @@ public class ClassifierWrapper {
 	private Instances dataSet;
 	private Evaluation eval;
 	private Integer totalClassifications = 0;
+	private String modelOutputDir;
+	private Integer classifierCode;
+	
+	static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
 	
 	public String getStats() {
 		return eval.toSummaryString();
@@ -70,5 +82,34 @@ public class ClassifierWrapper {
 
 	public Integer getTotalClassifications() {
 		return totalClassifications;
+	}
+	
+	public void serialize() throws IOException {
+		// serialize model
+		String modelFullPathName = classifierCode + ".model";
+		modelFullPathName = modelOutputDir + "\\" + modelFullPathName;
+		
+		logger.info("writing model to " + modelFullPathName);
+		
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFullPathName));
+		oos.writeObject(updateableClassifier);
+		oos.flush();
+		oos.close();
+	}
+
+	public String getModelOutputDir() {
+		return modelOutputDir;
+	}
+
+	public void setModelOutputDir(String modelOutputDir) {
+		this.modelOutputDir = modelOutputDir;
+	}
+
+	public Integer getClassifierCode() {
+		return classifierCode;
+	}
+
+	public void setClassifierCode(Integer classifierCode) {
+		this.classifierCode = classifierCode;
 	}
 }

@@ -19,7 +19,7 @@ public class BackEndServer {
 	public void start() {
 		logger.info("backend start");
 		
-		//initFetcher();
+		initFetcher();
 		
 		/* PLACE HOLDER START */
 		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("cnn.com", Classification.BENIGN);

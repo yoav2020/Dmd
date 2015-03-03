@@ -1,3 +1,20 @@
+39j.ru MALICIOUS
+3a2.ru MALICIOUS
+3b4.ru MALICIOUS
+3b7.ru MALICIOUS
+3b8.ru MALICIOUS
+3b9.ru MALICIOUS
+3bh.ru MALICIOUS
+3bp.ru MALICIOUS
+3bq.ru MALICIOUS
+3ca.ru MALICIOUS
+3cf.ru MALICIOUS
+3cw.ru MALICIOUS
+3ew.ru MALICIOUS
+3f2.ru MALICIOUS
+3f7.ru MALICIOUS
+3f9.ru MALICIOUS
+39u.ru MALICIOUS
 facebook.com BENIGN
 google.com BENIGN
 youtube.com BENIGN
@@ -15,3 +32,5 @@ yahoo.co.jp BENIGN
 linkedin.com BENIGN
 blogfa.com BENIGN
 mrskin.com BENIGN
+msn.co.il UNKNOWN
+39u.ru UNKNOWN

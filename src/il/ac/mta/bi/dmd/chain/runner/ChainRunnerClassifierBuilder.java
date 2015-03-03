@@ -5,6 +5,7 @@ import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 	
 	private static Map<Integer,ClassifierWrapper> classifierMap = new HashMap<>();
 	private static final Integer CLASS_TEST_RATIO = 4;
+	private static final String MODEL_OUT_DIR = "data";
 	
 	public ChainRunnerClassifierBuilder() {
 		setChainName("Classifier Builder Runner");
@@ -68,9 +70,17 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 			ClassifierWrapper classifierWrapper) throws Exception {
 		if (classifierWrapper.getTotalClassifications() % CLASS_TEST_RATIO == 
 				CLASS_TEST_RATIO-1) {
+			
 			logger.info("testing classifier");
 			classifierWrapper.evaluateModel(instanceData);
 			logger.info(classifierWrapper.getStats());
+			
+			try {
+				classifierWrapper.serialize();
+				logger.info("successfully saved the model");
+			} catch (IOException e) {
+				logger.error("failed to serialize model", e);
+			}
 		} else {
 			logger.info("training classifier");
 			classifierWrapper.updateClassifier(instanceData);
@@ -80,10 +90,13 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 	private ClassifierWrapper generateClassifier() throws Exception {
 		Instances dataSet = (Instances) domainToAnalyze.getPropertiesMap().get("dataSet");
 		ClassifierWrapper classifierWrapper = new ClassifierWrapper();
+		Integer classifierCode = (Integer) domainToAnalyze.getPropertiesMap().get("fvWekaAttributesHash");
 
 		classifierWrapper.buildClassifier(dataSet);
 		classifierWrapper.setDataSet(dataSet);
 		classifierWrapper.setEval(new Evaluation(dataSet));
+		classifierWrapper.setModelOutputDir(MODEL_OUT_DIR);
+		classifierWrapper.setClassifierCode(classifierCode);
 		
 		logger.info("classifier created successfully!");
 		
