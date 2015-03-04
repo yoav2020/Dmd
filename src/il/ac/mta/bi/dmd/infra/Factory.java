@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 public final class Factory {	
 	private static Logger 	logger 	= Logger.getLogger(BackEndServer.class);
-	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(64);
+	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(128);
 	private static Factory 	theFactory = null;
 	
 	private Factory() {

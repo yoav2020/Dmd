@@ -29,7 +29,7 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 	
 	private static final DnsLookup	dnsLookup = new DnsLookup();
 	private static final String 	DNS_SERVER = "8.8.8.8";
-	private static final Integer	MAX_THREAD_COUNT = 32;
+	private static final Integer	MAX_THREAD_COUNT = 64;
 	private static Semaphore 		chainRunnerDnsLookupSemaphore;
 	
 	private static final LinkedBlockingQueue<ChainRunnerDnsLookup> inQueue =
@@ -103,6 +103,8 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 			
 			try {				
 				DomainToAnalyze domainToAnalyze = chainRunner.domainToAnalyze;
+				
+				logger.info("creating lookup request for " + domainToAnalyze.getDomainName());
 				
 				Record [] domainRecords = dnsLookup.lookupTypeA(domainToAnalyze.getDomainName(), 
 						DNS_SERVER);
