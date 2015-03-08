@@ -8,7 +8,9 @@ import java.io.ObjectOutputStream;
 
 import org.apache.log4j.Logger;
 
+import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.UpdateableClassifier;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -27,12 +29,13 @@ import weka.core.Instances;
  */
 
 public class ClassifierWrapper {
-	private NaiveBayesUpdateable updateableClassifier;
+	private Classifier classifier;
 	private Instances dataSet;
 	private Evaluation eval;
 	private Integer totalClassifications = 0;
 	private String modelOutputDir;
 	private Integer classifierCode;
+	private String nickName; 
 	
 	static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
 	
@@ -40,31 +43,35 @@ public class ClassifierWrapper {
 		return eval.toSummaryString();
 	}
 	
-	public ClassifierWrapper() {
-		updateableClassifier = new NaiveBayesUpdateable();
+	public ClassifierWrapper(Classifier classifier) {
+		this.classifier = classifier;
 	}
 	
 	public void buildClassifier(Instances dataSet) throws Exception {
-		updateableClassifier.buildClassifier(dataSet);
+		classifier.buildClassifier(dataSet);
 	}
 	
 	public void evaluateModel(Instance instanceData) throws Exception {
 		totalClassifications ++;
 		
 		dataSet.add(instanceData);
-		eval.evaluateModel(updateableClassifier, dataSet);
+		eval.evaluateModel(classifier, dataSet);
 	}
 	
 	public void updateClassifier(Instance instanceData) throws Exception {
 		totalClassifications ++;
 		
-		updateableClassifier.updateClassifier(instanceData);
+		if (classifier instanceof UpdateableClassifier) {
+			UpdateableClassifier updateableClassifier =
+					(UpdateableClassifier) this.classifier;
+			updateableClassifier.updateClassifier(instanceData);
+		}
 	}
 	
 	public double[] classifyInstance(Instance instanceData) throws Exception {
 		totalClassifications ++;
 		
-		double[] result = updateableClassifier.distributionForInstance(instanceData);
+		double[] result = classifier.distributionForInstance(instanceData);
 		return result;
 	}
 	
@@ -86,7 +93,7 @@ public class ClassifierWrapper {
 	
 	public void deSerialize() throws ClassNotFoundException, IOException {
 		 // deserialize model
-		String modelFullPathName = classifierCode + ".model";
+		String modelFullPathName = classifierCode + "_" + nickName + ".model";
 		modelFullPathName = modelOutputDir + "\\" + modelFullPathName;
 		
 		logger.info("reading model from " + modelFullPathName);
@@ -100,19 +107,21 @@ public class ClassifierWrapper {
 		logger.info("deserializing model");
 		
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileModel));
-		updateableClassifier = (NaiveBayesUpdateable) ois.readObject();
+		classifier = (NaiveBayesUpdateable) ois.readObject();
 		ois.close();
 	}
 	
 	public void serialize() throws IOException {
 		// serialize model
-		String modelFullPathName = classifierCode + ".model";
+		String modelFullPathName = classifierCode + "_" + nickName + ".model";
 		modelFullPathName = modelOutputDir + "\\" + modelFullPathName;
+		
+		logger.info("serializing model");
 		
 		logger.info("writing model to " + modelFullPathName);
 		
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFullPathName));
-		oos.writeObject(updateableClassifier);
+		oos.writeObject(classifier);
 		oos.flush();
 		oos.close();
 	}
@@ -131,5 +140,13 @@ public class ClassifierWrapper {
 
 	public void setClassifierCode(Integer classifierCode) {
 		this.classifierCode = classifierCode;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 }
