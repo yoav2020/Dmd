@@ -55,7 +55,13 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 	
 	@Override
 	public void run() {
-		inQueue.add(this);
+		try {
+			inQueue.add(this);
+		} catch (Exception e) {
+			logger.error("caught exception ", e);
+			setStatus(ProcessingChain.chainStatus.ERROR);
+			flush();
+		}
 	}
 	
 	/* internal private class for consumer thread; calls the working
