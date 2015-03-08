@@ -159,5 +159,5 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 				}
 			}
 		}
-		}
+	}
 }
