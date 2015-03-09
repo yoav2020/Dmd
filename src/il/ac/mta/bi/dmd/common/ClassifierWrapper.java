@@ -36,7 +36,7 @@ public class ClassifierWrapper {
 	private String modelOutputDir;
 	private Integer classifierCode;
 	private String nickName; 
-	private static final Integer CLASS_BUILD_RATIO = 5;
+	private static final Integer CLASS_BUILD_RATIO = 1024;
 	
 	private static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
 	
