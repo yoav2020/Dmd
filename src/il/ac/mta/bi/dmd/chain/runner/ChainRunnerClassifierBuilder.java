@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -24,13 +25,27 @@ import weka.core.Instances;
 
 public class ChainRunnerClassifierBuilder extends ProcessChain {
 	static Logger 	logger = Logger.getLogger(ChainRunnerClassifierBuilder.class);
-	
 	private static Map<Integer,ClassifierWrapper> classifierMap = new HashMap<>();
 	private static final Integer SERIALIZATION_RATIO = 1024;
 	private static final String MODEL_OUT_DIR = "data";
 	
+	private ClassifierType myType;
+	
 	public ChainRunnerClassifierBuilder() {
 		setChainName("Classifier Builder Runner");
+		this.myType = ClassifierType.NaiveBayesUpdateable;
+	}
+	
+	public ChainRunnerClassifierBuilder(ClassifierType myType) {
+		setChainName("Classifier Builder Runner");
+		this.myType = myType;
+	}
+	
+	
+	/* supported classifier types */
+	public enum ClassifierType{
+		J48, 
+		NaiveBayesUpdateable
 	}
 
 	@Override
@@ -116,14 +131,27 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 
 	private ClassifierWrapper generateClassifier(Instances dataSet,
 			Integer classifierCode) throws Exception {
-		ClassifierWrapper classifierWrapper = 
-				new ClassifierWrapper(new NaiveBayesUpdateable());
+		ClassifierWrapper classifierWrapper = null;
+		
+		switch (myType) {
+		case J48:
+			classifierWrapper = new ClassifierWrapper(new J48());
+			classifierWrapper.setNickName(ClassifierType.J48.toString());
+			break;
+			
+		case NaiveBayesUpdateable:
+		default:
+			classifierWrapper = new ClassifierWrapper(new NaiveBayesUpdateable());
+			classifierWrapper.setNickName(ClassifierType.NaiveBayesUpdateable.toString());
+			break;
+		}
+
 		classifierWrapper.buildClassifier(dataSet);
 		classifierWrapper.setDataSet(dataSet);
 		classifierWrapper.setEval(new Evaluation(dataSet));
 		classifierWrapper.setModelOutputDir(MODEL_OUT_DIR);
 		classifierWrapper.setClassifierCode(classifierCode);
-		classifierWrapper.setNickName("updateable_classifier");
+
 		return classifierWrapper;
 	}
 

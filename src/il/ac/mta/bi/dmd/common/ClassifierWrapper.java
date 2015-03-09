@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.UpdateableClassifier;
-import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -62,8 +61,6 @@ public class ClassifierWrapper {
 	}
 	
 	public double[] classifyInstance(Instance instanceData) throws Exception {
-		totalClassifications ++;
-		
 		double[] result = classifier.distributionForInstance(instanceData);
 		return result;
 	}
@@ -100,7 +97,7 @@ public class ClassifierWrapper {
 		logger.info("deserializing model");
 		
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileModel));
-		classifier = (NaiveBayesUpdateable) ois.readObject();
+		classifier = (Classifier) ois.readObject();
 		ois.close();
 	}
 	
