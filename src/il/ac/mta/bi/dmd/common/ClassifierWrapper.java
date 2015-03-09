@@ -36,8 +36,9 @@ public class ClassifierWrapper {
 	private String modelOutputDir;
 	private Integer classifierCode;
 	private String nickName; 
+	private static final Integer CLASS_BUILD_RATIO = 5;
 	
-	static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
+	private static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
 	
 	public String getStats() {
 		return eval.toSummaryString();
@@ -65,6 +66,11 @@ public class ClassifierWrapper {
 			UpdateableClassifier updateableClassifier =
 					(UpdateableClassifier) this.classifier;
 			updateableClassifier.updateClassifier(instanceData);
+		} else { 
+			if (totalClassifications % CLASS_BUILD_RATIO == 0) {
+				dataSet.add(instanceData);
+				classifier.buildClassifier(dataSet);
+			}
 		}
 	}
 	
