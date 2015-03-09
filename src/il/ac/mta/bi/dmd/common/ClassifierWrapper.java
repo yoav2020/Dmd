@@ -15,19 +15,6 @@ import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Instance;
 import weka.core.Instances;
 
-/* A wrapper for the classifier, of type NaiveBayesUpdateable. From wikipeida 
- * (http://en.wikipedia.org/wiki/Naive_Bayes_classifier):
- * 
- * Naive Bayes is a simple technique for constructing classifiers: models that assign class labels to 
- * problem instances, represented as vectors of feature values, where the class labels are drawn from 
- * some finite set. It is not a single algorithm for training such classifiers, but a family of algorithms
- * based on a common principle: all naive Bayes classifiers assumes that the value of a particular feature
- * is independent of the value of any other feature, given the class variable. For example, a fruit may
- * be considered to be an apple if it is red, round, and about 3" in diameter. A naive Bayes classifier
- * considers each of these features to contribute independently to the probability that this fruit is
- * an apple, regardless of any possible correlations between the color, roundness and diameter features.
- */
-
 public class ClassifierWrapper {
 	private Classifier classifier;
 	private Instances dataSet;
@@ -36,7 +23,7 @@ public class ClassifierWrapper {
 	private String modelOutputDir;
 	private Integer classifierCode;
 	private String nickName; 
-	private static final Integer CLASS_BUILD_RATIO = 1024;
+	private static final Integer CLASS_BUILD_RATIO = 5;
 	
 	private static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
 	
