@@ -1,7 +1,7 @@
 package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerArffCreator;
-import il.ac.mta.bi.dmd.chain.runner.ChainRunnerUpdateableClassifierBuilder;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
@@ -130,7 +130,7 @@ public final class Factory {
 		processingChain.addToChain(chainRunnerArffCreator);
 		
 		/* ChainRunnerClassifierBuilder*/
-		ChainRunnerUpdateableClassifierBuilder chainRunnerClassifierBuilder = new ChainRunnerUpdateableClassifierBuilder();
+		ChainRunnerClassifierBuilder chainRunnerClassifierBuilder = new ChainRunnerClassifierBuilder();
 		processingChain.addToChain(chainRunnerClassifierBuilder);
 		
 		/* ChainRunnerClassify*/

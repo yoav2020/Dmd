@@ -22,14 +22,14 @@ import weka.core.Instances;
  * to be used for classifying the domain
  */
 
-public class ChainRunnerUpdateableClassifierBuilder extends ProcessChain {
-	static Logger 	logger = Logger.getLogger(ChainRunnerUpdateableClassifierBuilder.class);
+public class ChainRunnerClassifierBuilder extends ProcessChain {
+	static Logger 	logger = Logger.getLogger(ChainRunnerClassifierBuilder.class);
 	
 	private static Map<Integer,ClassifierWrapper> classifierMap = new HashMap<>();
 	private static final Integer SERIALIZATION_RATIO = 1024;
 	private static final String MODEL_OUT_DIR = "data";
 	
-	public ChainRunnerUpdateableClassifierBuilder() {
+	public ChainRunnerClassifierBuilder() {
 		setChainName("Classifier Builder Runner");
 	}
 
@@ -101,7 +101,7 @@ public class ChainRunnerUpdateableClassifierBuilder extends ProcessChain {
 		return classifierWrapper;
 	}
 	
-	/* A wrapper for the classifier, of type NaiveBayesUpdateable. From wikipeida 
+	/* A wrapper for the classifier
 	 * (http://en.wikipedia.org/wiki/Naive_Bayes_classifier):
 	 * 
 	 * Naive Bayes is a simple technique for constructing classifiers: models that assign class labels to 
