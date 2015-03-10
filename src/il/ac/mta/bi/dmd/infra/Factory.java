@@ -3,6 +3,7 @@ package il.ac.mta.bi.dmd.infra;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerArffCreator;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
@@ -116,6 +117,11 @@ public final class Factory {
 		/* ChainRunnerValidate */
 		ChainRunnerValidate chainRunnderValidate = new ChainRunnerValidate();
 		processingChain.addToChain(chainRunnderValidate);
+		
+
+		/* ChainRunnerDictRatio*/
+		ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();
+		processingChain.addToChain(dictRatioRunner);
 		
 		/* ChainRunnerDnsLookup*/
 		ChainRunnerDnsLookup dnsLookupRunner = new ChainRunnerDnsLookup();
