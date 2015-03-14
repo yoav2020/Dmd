@@ -111,23 +111,10 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 			logger.error("failed to deserialize model", e);
 		}
 		
-		logger.info("classifier created successfully!");
+		logger.info("classifier created successfully! type=" + myType.toString());
 		
 		return classifierWrapper;
 	}
-	
-	/* A wrapper for the classifier
-	 * (http://en.wikipedia.org/wiki/Naive_Bayes_classifier):
-	 * 
-	 * Naive Bayes is a simple technique for constructing classifiers: models that assign class labels to 
-	 * problem instances, represented as vectors of feature values, where the class labels are drawn from 
-	 * some finite set. It is not a single algorithm for training such classifiers, but a family of algorithms
-	 * based on a common principle: all naive Bayes classifiers assumes that the value of a particular feature
-	 * is independent of the value of any other feature, given the class variable. For example, a fruit may
-	 * be considered to be an apple if it is red, round, and about 3" in diameter. A naive Bayes classifier
-	 * considers each of these features to contribute independently to the probability that this fruit is
-	 * an apple, regardless of any possible correlations between the color, roundness and diameter features.
-	 */
 
 	private ClassifierWrapper generateClassifier(Instances dataSet,
 			Integer classifierCode) throws Exception {
@@ -145,7 +132,7 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 			classifierWrapper.setNickName(ClassifierType.NaiveBayesUpdateable.toString());
 			break;
 		}
-
+		
 		classifierWrapper.buildClassifier(dataSet);
 		classifierWrapper.setDataSet(dataSet);
 		classifierWrapper.setEval(new Evaluation(dataSet));

@@ -93,7 +93,7 @@ public class ChainRunnerArffCreator extends ProcessChain {
 			attIndex ++;
 		}
 		
-		/* add classification for unknown domains only */
+		/* add classification for known domains only */
 		if (domainToAnalyze.getClassification() != Classification.UNKNOWN) {
 			instanceData.setValue(attIndex, domainToAnalyze.getClassification().toString());
 		}

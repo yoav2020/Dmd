@@ -20,10 +20,10 @@ public class BackEndServer {
 		logger.info("backend start");
 		
 		/* edit \data\input.txt to load domains from files by fetcher */
-		initFetcher();
+		//initFetcher();
 		
 		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("app.pho8.com", Classification.UNKNOWN);
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("microsoft.com", Classification.UNKNOWN);
 		dispatchQueue.add(a1);
 		
 		/* PLACE HOLDER END */
