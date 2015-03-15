@@ -5,21 +5,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.xbill.DNS.Record;
 
-import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain.chainStatus;
+import il.ac.mta.bi.dmd.dictionary.ahocorasick.interval.IntervalableComparatorBySize;
 import il.ac.mta.bi.dmd.dictionary.ahocorasick.trie.Emit;
 import il.ac.mta.bi.dmd.dictionary.ahocorasick.trie.Trie;
 import il.ac.mta.bi.dmd.infra.Factory;
@@ -51,8 +50,9 @@ public class ChainRunnerDictRatio extends ProcessChain {
 			try {
 				readFileIntoTrie(new File(DICTIONARY_FILE), trie);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				logger.error("caught exception on Chain - Dictionary Ratio ", e);
+				setStatus(ProcessingChain.chainStatus.ERROR);
 			}
 			
 			isFirstRun = false;
@@ -82,9 +82,19 @@ public class ChainRunnerDictRatio extends ProcessChain {
 		try {
 				logger.info("creating Dictionary Ratio request for " + domainToAnalyze.getDomainName());
 				
-				Collection<Emit> emits = trie.parseText(domainToAnalyze.getDomainName().split(Pattern.quote("."))[0]);
-			    percent = (100* emits.size()) / domainToAnalyze.getDomainName().length();
-			    System.out.println(domainToAnalyze.getDomainName() + " = " + percent + "%");
+				String tempDomain = domainToAnalyze.getDomainName().split(Pattern.quote("."))[0];
+				List<Emit> listEmits = new ArrayList<Emit>(trie.parseText(tempDomain));
+			    Collections.sort(listEmits , new IntervalableComparatorBySize());
+
+			    for (Emit emit : listEmits) {
+			    	if (tempDomain.length() == 0)
+			    		break;
+			    	tempDomain = tempDomain.replace(emit.getKeyword(), "");
+				}
+			    
+			    
+			    percent = (100* tempDomain.length()) / domainToAnalyze.getDomainName().split(Pattern.quote("."))[0].length();
+			    //System.out.println(domainToAnalyze.getDomainName() + " = " + percent + "%");
 			
 				logger.info("inserting " + percent + "% domain name ration by dictionary for " +
 						domainToAnalyze.getDomainName());
