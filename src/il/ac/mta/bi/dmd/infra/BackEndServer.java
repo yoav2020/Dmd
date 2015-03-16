@@ -23,7 +23,7 @@ public class BackEndServer {
 		initFetcher();
 		
 		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("v2mlblack.biz", Classification.UNKNOWN);
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("ynet.co.il", Classification.UNKNOWN);
 		dispatchQueue.add(a1);
 		
 		/* PLACE HOLDER END */

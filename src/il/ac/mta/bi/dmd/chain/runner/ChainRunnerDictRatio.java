@@ -1,19 +1,5 @@
 package il.ac.mta.bi.dmd.chain.runner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
@@ -22,6 +8,19 @@ import il.ac.mta.bi.dmd.dictionary.ahocorasick.interval.IntervalableComparatorBy
 import il.ac.mta.bi.dmd.dictionary.ahocorasick.trie.Emit;
 import il.ac.mta.bi.dmd.dictionary.ahocorasick.trie.Trie;
 import il.ac.mta.bi.dmd.infra.Factory;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
 
 /**
  * This chain runner calculate the ratio of the domain name string by

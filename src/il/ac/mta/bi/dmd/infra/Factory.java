@@ -136,8 +136,14 @@ public final class Factory {
 		processingChain.addToChain(chainRunnerArffCreator);
 		
 		/* ChainRunnerClassifierBuilder*/
-		ChainRunnerClassifierBuilder chainRunnerClassifierBuilder = new ChainRunnerClassifierBuilder();
-		processingChain.addToChain(chainRunnerClassifierBuilder);
+		ChainRunnerClassifierBuilder chainRunnerClassifierBuilderJ48 = 
+				new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.J48);
+		processingChain.addToChain(chainRunnerClassifierBuilderJ48);
+		
+		/* ChainRunnerClassifierBuilder*/
+		ChainRunnerClassifierBuilder chainRunnerClassifierBuilderNaive = 
+				new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.NaiveBayesUpdateable);
+		processingChain.addToChain(chainRunnerClassifierBuilderNaive);
 		
 		/* ChainRunnerClassify*/
 		ChainRunnerClassify chainRunnerClassify = new ChainRunnerClassify();

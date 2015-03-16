@@ -24,23 +24,17 @@ import weka.core.Instances;
  */
 
 public class ChainRunnerClassifierBuilder extends ProcessChain {
-	static Logger 	logger = Logger.getLogger(ChainRunnerClassifierBuilder.class);
+	private static Logger 	logger = Logger.getLogger(ChainRunnerClassifierBuilder.class);
 	private static Map<Integer,ClassifierWrapper> classifierMap = new HashMap<>();
 	private static final Integer SERIALIZATION_RATIO = 1024;
 	private static final String MODEL_OUT_DIR = "data";
 	
 	private ClassifierType myType;
 	
-	public ChainRunnerClassifierBuilder() {
-		setChainName("Classifier Builder Runner");
-		this.myType = ClassifierType.NaiveBayesUpdateable;
-	}
-	
 	public ChainRunnerClassifierBuilder(ClassifierType myType) {
-		setChainName("Classifier Builder Runner");
 		this.myType = myType;
+		setChainName("Classifier Builder Runner (" + this.myType + ")");
 	}
-	
 	
 	/* supported classifier types */
 	public enum ClassifierType{
@@ -57,11 +51,17 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 			Instance instanceData = 
 					(Instance) domainToAnalyze.getPropertiesMap().get("instanceData");
 			
-			ClassifierWrapper classifierWrapper = classifierMap.get(fvWekaAttributesHash);
+			Integer classifierKey = 
+					(fvWekaAttributesHash.toString() + myType).hashCode();
+			
+			ClassifierWrapper classifierWrapper = classifierMap.get(classifierKey);
+			
+			logger.info("looking for classifier with key=" + classifierKey);
+			
 			if (classifierWrapper == null) {
 				classifierWrapper = getClassifier();
-				classifierMap.put(fvWekaAttributesHash, classifierWrapper);
-			}		
+				classifierMap.put(classifierKey, classifierWrapper);
+			}
 			
 			/* if we are certain of the domain classification - use it for
 			 * training or evaluation testing
@@ -103,6 +103,8 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 	private ClassifierWrapper getClassifier() throws Exception {
 		Instances dataSet = (Instances) domainToAnalyze.getPropertiesMap().get("dataSet");
 		Integer classifierCode = (Integer) domainToAnalyze.getPropertiesMap().get("fvWekaAttributesHash");
+		
+		logger.info("creating classifier, type=" + myType.toString());
 
 		ClassifierWrapper classifierWrapper = generateClassifier(dataSet, classifierCode);
 		try {
@@ -111,7 +113,7 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 			logger.error("failed to deserialize model", e);
 		}
 		
-		logger.info("classifier created successfully! type=" + myType.toString());
+		logger.info("classifier created successfully, type=" + myType.toString());
 		
 		return classifierWrapper;
 	}
