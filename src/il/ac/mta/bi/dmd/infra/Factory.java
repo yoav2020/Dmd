@@ -5,6 +5,7 @@ import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerStripDomainName;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
@@ -118,6 +119,9 @@ public final class Factory {
 		ChainRunnerValidate chainRunnderValidate = new ChainRunnerValidate();
 		processingChain.addToChain(chainRunnderValidate);
 		
+		/* ChainRunnerStripDomainName */
+		ChainRunnerStripDomainName chainRunnerStripDomainName = new ChainRunnerStripDomainName();
+		processingChain.addToChain(chainRunnerStripDomainName);
 
 		/* ChainRunnerDictRatio*/
 		ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();
@@ -135,12 +139,12 @@ public final class Factory {
 		ChainRunnerArffCreator chainRunnerArffCreator = new ChainRunnerArffCreator();
 		processingChain.addToChain(chainRunnerArffCreator);
 		
-		/* ChainRunnerClassifierBuilder*/
+		/* ChainRunnerClassifierBuilder (j48)*/
 		ChainRunnerClassifierBuilder chainRunnerClassifierBuilderJ48 = 
 				new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.J48);
 		processingChain.addToChain(chainRunnerClassifierBuilderJ48);
 		
-		/* ChainRunnerClassifierBuilder*/
+		/* ChainRunnerClassifierBuilder (NaiveBayes) */
 		ChainRunnerClassifierBuilder chainRunnerClassifierBuilderNaive = 
 				new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.NaiveBayesUpdateable);
 		processingChain.addToChain(chainRunnerClassifierBuilderNaive);
