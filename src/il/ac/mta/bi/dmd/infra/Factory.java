@@ -5,6 +5,7 @@ import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerPopularity;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
@@ -29,7 +30,8 @@ import org.apache.log4j.Logger;
 public final class Factory {	
 	private static Logger 	logger 	= Logger.getLogger(BackEndServer.class);
 	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(128);
-	private static Factory 	theFactory = null;
+ 	
+        private static Factory 	theFactory = null;
 	
 	private Factory() {
 	}
@@ -118,6 +120,9 @@ public final class Factory {
 		ChainRunnerValidate chainRunnderValidate = new ChainRunnerValidate();
 		processingChain.addToChain(chainRunnderValidate);
 		
+                /* ChainRunnerPopularity */
+                ChainRunnerPopularity chainRunnerPopularity = new ChainRunnerPopularity();
+                processingChain.addToChain(chainRunnerPopularity);
 
 		/* ChainRunnerDictRatio*/
 		ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();
@@ -142,6 +147,7 @@ public final class Factory {
 		/* ChainRunnerClassify*/
 		ChainRunnerClassify chainRunnerClassify = new ChainRunnerClassify();
 		processingChain.addToChain(chainRunnerClassify);
+
 	}
 	
 	/**
