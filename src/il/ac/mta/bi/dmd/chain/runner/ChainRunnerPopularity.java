@@ -42,6 +42,7 @@ public class ChainRunnerPopularity extends ProcessChain {
     private static boolean bLocked = false;
     private int HASH_SIZE = 1000000;
     private String FEATURE_NAME = "domainRank";
+    private boolean bFirstRun = true;
 
     public ChainRunnerPopularity() {
         setChainName("Popularity checker");
@@ -51,20 +52,23 @@ public class ChainRunnerPopularity extends ProcessChain {
     @Override
     public void run() {
         out.println("Getting " + domainToAnalyze.getDomainName() + " rank.");
+        
+        //Initialize the first run
+        if (bFirstRun) {
+            // Is there a new version needed?
+            if (IsDownloadNeed()) {
+                // Download the new zip
+                DownloadCSV();
+                //Unzip the zip
+                UnzipCSV();
+                // Looad the new hashmap
+                switchHashMap();
+            }
 
-        // Is there a new version needed?
-        if (IsDownloadNeed()) {
-            // Download the new zip
-            DownloadCSV();
-            //Unzip the zip
-            UnzipCSV();
-            // Looad the new hashmap
-            switchHashMap();
-        }
-
-        // Load the new hashmap 
-        if (mSitePopulatiry.size() < 1) {
-            switchHashMap();
+            // Load the new hashmap 
+            if (mSitePopulatiry.size() < 1) {
+                switchHashMap();
+            }
         }
         boolean bFound = false;
         int nValue = 0;
