@@ -124,4 +124,8 @@ public class DomainToAnalyze {
 	   return ClassAttribute;
 	}
 
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+
 }

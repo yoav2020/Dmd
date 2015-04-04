@@ -33,6 +33,8 @@ public class ChainRunnerClassify extends ProcessChain {
 						(Instance) domainToAnalyze.getPropertiesMap().get("instanceData");
 				double[] result = classifierWrapper.classifyInstance(instanceData);
 				
+				logger.info("classifier name=" + classifierWrapper.getNickName());
+				
 				logger.info("malicious chance=" + result[0]);
 				logger.info("benign chance=" + result[1]);
 				
@@ -43,7 +45,7 @@ public class ChainRunnerClassify extends ProcessChain {
 			} else {
 				logger.info("domain type is known, nothing to do");
 			}
-			System.out.println("total=" + ++total);
+			System.out.println("total domains classified=" + ++total);
 		} catch (Exception e) {
 			logger.error("caught exception ", e);
 			setStatus(ProcessingChain.chainStatus.ERROR);
