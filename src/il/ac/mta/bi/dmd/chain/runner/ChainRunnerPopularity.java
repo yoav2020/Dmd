@@ -43,7 +43,7 @@ public class ChainRunnerPopularity extends ProcessChain {
     private int HASH_SIZE = 10000;
     private String FEATURE_NAME = "domainRank";
     private boolean bFirstRun = true;
-    public boolean showPos = true;
+    public boolean showPos = false;
 
     public ChainRunnerPopularity() {
         setChainName("Popularity checker");

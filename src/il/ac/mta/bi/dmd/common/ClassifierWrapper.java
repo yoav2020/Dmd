@@ -85,16 +85,15 @@ public class ClassifierWrapper {
 		 // deserialize model
 		String modelFullPathName = classifierCode + "_" + nickName + ".model";
 		modelFullPathName = modelOutputDir + "\\" + modelFullPathName;
-		
-		logger.info("reading model from " + modelFullPathName);
-		
+				
 		java.io.File fileModel = new java.io.File(modelFullPathName);
 		
 		if(fileModel.exists() == false) {
 			return;
 		}
 		
-		logger.info("deserializing model");
+		logger.info("reading model from " + modelFullPathName);
+		logger.info("deserializing model...");
 		
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileModel));
 		classifier = (Classifier) ois.readObject();
