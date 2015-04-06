@@ -161,7 +161,7 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 						featuresMap.get("asOnwer").setValue(results.getAsOnwer());
 					}
 				} catch (Exception e) {
-					logger.warn("failed handling results", e);
+					logger.warn("failed handling result", e);
 				}
 			}
 		}
