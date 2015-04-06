@@ -43,6 +43,7 @@ public class ChainRunnerPopularity extends ProcessChain {
     private int HASH_SIZE = 1000000;
     private String FEATURE_NAME = "domainRank";
     private boolean bFirstRun = true;
+    public boolean showPos = true;
 
     public ChainRunnerPopularity() {
         setChainName("Popularity checker");
@@ -89,6 +90,7 @@ public class ChainRunnerPopularity extends ProcessChain {
 
             if (bFound) {
                 nValue = mSitePopulatiry.get(domainToAnalyze.getDomainName());
+                nValue = showPos== true ? nValue : 1;
             }
             Feature feature = featuresMap.get(FEATURE_NAME);
             if (bFound) {
