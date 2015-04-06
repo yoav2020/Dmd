@@ -38,9 +38,9 @@ public class ChainRunnerPopularity extends ProcessChain {
     private String FILE_NAME = "top-1m-csvsites.zip";
     private String FILE_NAME_OUTPUT = "top-1m.csv";
     private String FILE_URL = "http://s3.amazonaws.com/alexa-static/top-1m.csv.zip";
-    private static Map<String, Integer> mSitePopulatiry = new HashMap();
+    private static Map<String, Integer> mSitePopulatiry = new HashMap<String, Integer>();
     private static boolean bLocked = false;
-    private int HASH_SIZE = 1000000;
+    private int HASH_SIZE = 10000;
     private String FEATURE_NAME = "domainRank";
     private boolean bFirstRun = true;
     public boolean showPos = true;
@@ -52,41 +52,40 @@ public class ChainRunnerPopularity extends ProcessChain {
 
     @Override
     public void run() {
-        out.println("Getting " + domainToAnalyze.getDomainName() + " rank.");
+        logger.info("Getting " + domainToAnalyze.getDomainName() + " rank.");
         
-        //Initialize the first run
-        if (bFirstRun) {
-            // Is there a new version needed?
-            if (IsDownloadNeed()) {
-                // Download the new zip
-                DownloadCSV();
-                //Unzip the zip
-                UnzipCSV();
-                // Looad the new hashmap
-                switchHashMap();
-            }
-
-            // Load the new hashmap 
-            if (mSitePopulatiry.size() < 1) {
-                switchHashMap();
-            }
-        }
-        boolean bFound = false;
-        int nValue = 0;
-
-        // Is the domain in the top 1'm?
-        if (mSitePopulatiry.containsKey(domainToAnalyze.getDomainName())) {
-            bFound = true;
-            logger.info("Domain rank found.");
-            setStatus(ProcessingChain.chainStatus.OK);
-        } else {
-            logger.info("Domain rank not found.");
-            setStatus(ProcessingChain.chainStatus.ERROR);
-        }
-
-        Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
-        Map<String, Object> propertiesMap = domainToAnalyze.getPropertiesMap();
         try {
+	        //Initialize the first run
+	        if (bFirstRun) {
+	            // Is there a new version needed?
+	            if (IsDownloadNeed()) {
+	                // Download the new zip
+	                DownloadCSV();
+	                //Unzip the zip
+	                UnzipCSV();
+	                // Looad the new hashmap
+	                switchHashMap();
+	            }
+	
+	            // Load the new hashmap 
+	            if (mSitePopulatiry.size() < 1) {
+	                switchHashMap();
+	            }
+	        }
+	        boolean bFound = false;
+	        int nValue = 0;
+	
+	        // Is the domain in the top 1'm?
+	        if (mSitePopulatiry.containsKey(domainToAnalyze.getDomainName())) {
+	            bFound = true;
+	            logger.info("Domain rank found.");
+	        } else {
+	            bFound = false;
+	            logger.info("Domain rank not found.");
+	        }
+	
+	        Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
+	        Map<String, Object> propertiesMap = domainToAnalyze.getPropertiesMap();
 
             if (bFound) {
                 nValue = mSitePopulatiry.get(domainToAnalyze.getDomainName());
@@ -104,10 +103,12 @@ public class ChainRunnerPopularity extends ProcessChain {
             } else {
                 propertiesMap.put(feature.getName(), null);
             }
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(ChainRunnerPopularity.class.getName()).log(Level.SEVERE, null, ex);
+            
+	        logger.info("Finished checking domain. rank is " + nValue);
+        } catch (Exception e) {
+        	logger.error("caught exception ", e);
+            setStatus(ProcessingChain.chainStatus.ERROR);
         }
-        out.println("Finished checking domain. rank is " + nValue);
         flush();
     }
 
@@ -126,14 +127,14 @@ public class ChainRunnerPopularity extends ProcessChain {
 
             frLoad = new FileReader(FILE_DIR + "/" + FILE_NAME_OUTPUT);
             brFile = new BufferedReader(frLoad);
-            out.println("Loading HashMap");
+            logger.info("Loading Popularity HashMap");
 
             // scan all the csv file and insert the data into a hashamp
             for (nCounter = 0; nCounter < HASH_SIZE && ((strLine = brFile.readLine()) != null); ++nCounter) {
                 String[] strRank = strLine.split(strSeperator);
                 mSitePopulatiry.put(strRank[1], parseInt(strRank[0]));
             }
-            out.println("Finished loading.");
+            logger.info("Finished loading.");
             brFile.close();
 
         } catch (FileNotFoundException ex) {
@@ -172,10 +173,10 @@ public class ChainRunnerPopularity extends ProcessChain {
 
         // The diffrence is more the 24 hours
         if (lDiff >= (60 * 24)) {
-            out.println("A new version of top site avaliable.");
+            logger.info("A new version of top site avaliable.");
             return true;
         } else {
-            out.println("Top sites version is latest.");
+        	logger.info("Top sites version is latest.");
             return false;
         }
 

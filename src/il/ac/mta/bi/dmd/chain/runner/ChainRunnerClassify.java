@@ -16,8 +16,6 @@ import weka.core.Instance;
 public class ChainRunnerClassify extends ProcessChain {
 	private static Logger 	logger = Logger.getLogger(ChainRunnerClassify.class);
 	
-	private static Integer total = 0;
-
 	public ChainRunnerClassify() {
 		setChainName("Classifier Runner");
 	}
@@ -45,7 +43,6 @@ public class ChainRunnerClassify extends ProcessChain {
 			} else {
 				logger.info("domain type is known, nothing to do");
 			}
-			System.out.println("total domains classified=" + ++total);
 		} catch (Exception e) {
 			logger.error("caught exception ", e);
 			setStatus(ProcessingChain.chainStatus.ERROR);

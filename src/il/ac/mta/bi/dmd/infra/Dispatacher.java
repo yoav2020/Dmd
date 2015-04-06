@@ -17,6 +17,8 @@ public class Dispatacher {
 	}
 	
 	public void run() {
+		int total = 0;
+		
 		while(true) {
 			try {
 				DomainToAnalyze domainToAnalyze = dispatchQueue.take();
@@ -31,6 +33,11 @@ public class Dispatacher {
 					} else {
 						logger.info(domainToAnalyze.getDomainName() + " handling finished successfully");
 					}
+					
+					total ++;
+					System.out.println("total domains classified: " + total + 
+							"; remaining in queue: " + 
+							dispatchQueue.size());
 					continue;
 				}
 	
