@@ -5,7 +5,7 @@ import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
-import il.ac.mta.bi.dmd.chain.runner.ChainRunnerStripDomainName;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerPopularity;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
@@ -30,7 +30,8 @@ import org.apache.log4j.Logger;
 public final class Factory {	
 	private static Logger 	logger 	= Logger.getLogger(BackEndServer.class);
 	private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(128);
-	private static Factory 	theFactory = null;
+ 	
+        private static Factory 	theFactory = null;
 	
 	private Factory() {
 	}
@@ -119,9 +120,9 @@ public final class Factory {
 		ChainRunnerValidate chainRunnderValidate = new ChainRunnerValidate();
 		processingChain.addToChain(chainRunnderValidate);
 		
-		/* ChainRunnerStripDomainName */
-		ChainRunnerStripDomainName chainRunnerStripDomainName = new ChainRunnerStripDomainName();
-		processingChain.addToChain(chainRunnerStripDomainName);
+                /* ChainRunnerPopularity */
+                ChainRunnerPopularity chainRunnerPopularity = new ChainRunnerPopularity();
+                processingChain.addToChain(chainRunnerPopularity);
 
 		/* ChainRunnerDictRatio*/
 		ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();
@@ -139,19 +140,14 @@ public final class Factory {
 		ChainRunnerArffCreator chainRunnerArffCreator = new ChainRunnerArffCreator();
 		processingChain.addToChain(chainRunnerArffCreator);
 		
-		/* ChainRunnerClassifierBuilder (j48)*/
-		ChainRunnerClassifierBuilder chainRunnerClassifierBuilderJ48 = 
-				new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.J48);
-		processingChain.addToChain(chainRunnerClassifierBuilderJ48);
-		
-		/* ChainRunnerClassifierBuilder (NaiveBayes) */
-		ChainRunnerClassifierBuilder chainRunnerClassifierBuilderNaive = 
-				new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.NaiveBayesUpdateable);
-		processingChain.addToChain(chainRunnerClassifierBuilderNaive);
+		/* ChainRunnerClassifierBuilder*/
+		ChainRunnerClassifierBuilder chainRunnerClassifierBuilder = new ChainRunnerClassifierBuilder();
+		processingChain.addToChain(chainRunnerClassifierBuilder);
 		
 		/* ChainRunnerClassify*/
 		ChainRunnerClassify chainRunnerClassify = new ChainRunnerClassify();
 		processingChain.addToChain(chainRunnerClassify);
+
 	}
 	
 	/**
