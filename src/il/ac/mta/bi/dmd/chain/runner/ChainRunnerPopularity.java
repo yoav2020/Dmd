@@ -53,60 +53,54 @@ public class ChainRunnerPopularity extends ProcessChain {
     @Override
     public void run() {
         logger.info("Getting " + domainToAnalyze.getDomainName() + " rank.");
-        
+
         try {
-	        //Initialize the first run
-	        if (bFirstRun) {
-	            // Is there a new version needed?
-	            if (IsDownloadNeed()) {
-	                // Download the new zip
-	                DownloadCSV();
-	                //Unzip the zip
-	                UnzipCSV();
-	                // Looad the new hashmap
-	                switchHashMap();
-	            }
-	
-	            // Load the new hashmap 
-	            if (mSitePopulatiry.size() < 1) {
-	                switchHashMap();
-	            }
-	        }
-	        boolean bFound = false;
-	        int nValue = 0;
-	
-	        // Is the domain in the top 1'm?
-	        if (mSitePopulatiry.containsKey(domainToAnalyze.getDomainName())) {
-	            bFound = true;
-	            logger.info("Domain rank found.");
-	        } else {
-	            bFound = false;
-	            logger.info("Domain rank not found.");
-	        }
-	
-	        Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
-	        Map<String, Object> propertiesMap = domainToAnalyze.getPropertiesMap();
+            //Initialize the first run
+            if (bFirstRun) {
+                // Is there a new version needed?
+                if (IsDownloadNeed()) {
+                    // Download the new zip
+                    DownloadCSV();
+                    //Unzip the zip
+                    UnzipCSV();
+                    // Looad the new hashmap
+                    switchHashMap();
+                }
+
+                // Load the new hashmap 
+                if (mSitePopulatiry.size() < 1) {
+                    switchHashMap();
+                }
+            }
+            boolean bFound = false;
+            int nValue = 0;
+
+            // Is the domain in the top 1'm?
+            if (mSitePopulatiry.containsKey(domainToAnalyze.getDomainName())) {
+                bFound = true;
+                logger.info("Domain rank found.");
+            } else {
+                bFound = false;
+                logger.info("Domain rank not found.");
+            }
+
+            Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
 
             if (bFound) {
                 nValue = mSitePopulatiry.get(domainToAnalyze.getDomainName());
-                nValue = showPos== true ? nValue : 1;
+                nValue = showPos == true ? nValue : 1;
             }
             Feature feature = featuresMap.get(FEATURE_NAME);
             if (bFound) {
                 feature.setValue(nValue);
             } else {
-                feature.setValue(null);
+                feature.setValue(0);
             }
             featuresMap.put(feature.getName(), feature);
-            if (bFound) {
-                propertiesMap.put(feature.getName(), nValue);
-            } else {
-                propertiesMap.put(feature.getName(), null);
-            }
-            
-	        logger.info("Finished checking domain. rank is " + nValue);
+
+            logger.info("Finished checking domain. rank is " + nValue);
         } catch (Exception e) {
-        	logger.error("caught exception ", e);
+            logger.error("caught exception ", e);
             setStatus(ProcessingChain.chainStatus.ERROR);
         }
         flush();
@@ -176,7 +170,7 @@ public class ChainRunnerPopularity extends ProcessChain {
             logger.info("A new version of top site avaliable.");
             return true;
         } else {
-        	logger.info("Top sites version is latest.");
+            logger.info("Top sites version is latest.");
             return false;
         }
 
