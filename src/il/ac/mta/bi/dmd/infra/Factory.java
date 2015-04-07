@@ -7,6 +7,7 @@ import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerPopularity;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerStripDomainName;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerTLD;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
@@ -124,9 +125,13 @@ public final class Factory {
 		ChainRunnerStripDomainName chainRunnerStripDomainName = new ChainRunnerStripDomainName();
 		processingChain.addToChain(chainRunnerStripDomainName);
 
-        /* ChainRunnerPopularity */
-        ChainRunnerPopularity chainRunnerPopularity = new ChainRunnerPopularity();
-        processingChain.addToChain(chainRunnerPopularity);
+                /* ChainRunnerPopularity */
+                ChainRunnerPopularity chainRunnerPopularity = new ChainRunnerPopularity();
+                processingChain.addToChain(chainRunnerPopularity);
+                
+                /* ChainRunnerPopularity */
+                ChainRunnerTLD chainRunnerTLD = new ChainRunnerTLD();
+                processingChain.addToChain(chainRunnerTLD);
 
 		/* ChainRunnerDictRatio*/
 		ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();

@@ -34,7 +34,7 @@ import java.util.zip.ZipInputStream;
 public class ChainRunnerPopularity extends ProcessChain {
 
     static Logger logger = Logger.getLogger(ChainRunnerDnsLookup.class);
-    private String FILE_DIR = "CSVExtract";
+    private String FILE_DIR = "data";
     private String FILE_NAME = "top-1m-csvsites.zip";
     private String FILE_NAME_OUTPUT = "top-1m.csv";
     private String FILE_URL = "http://s3.amazonaws.com/alexa-static/top-1m.csv.zip";
@@ -204,7 +204,7 @@ public class ChainRunnerPopularity extends ProcessChain {
             int nTotalDownloadSize = (int) lFileLength / 1024;
             float nProgress = 0;
             float fLast = -1;
-            out.println("Dowinloading " + FILE_NAME + " Total download size : " + nTotalDownloadSize + " KB");
+            logger.info("Dowinloading " + FILE_NAME + " Total download size : " + nTotalDownloadSize + " KB");
 
             // Read 1024 bytes everytime 
             while ((nByteCount = bufferInpStream.read(bData)) != -1) {
@@ -213,11 +213,11 @@ public class ChainRunnerPopularity extends ProcessChain {
                 nProgress = (((float) lTotalData * 100 / lFileLength));
                 nProgress = Math.round(nProgress);
                 if (nProgress % 10 == 0 && fLast < nProgress) {
-                    out.println("Total progress: %" + nProgress);
+                    logger.info("Total progress: %" + nProgress);
                     fLast = nProgress;
                 }
             }
-            out.println("Download finished.");
+            logger.info("Download finished.");
 
             bufferOutStream.flush();
             bufferOutStream.close();
@@ -256,13 +256,13 @@ public class ChainRunnerPopularity extends ProcessChain {
                     = new ZipInputStream(new FileInputStream(zipFile));
             //get the zipped file list entry
             ZipEntry ze = zis.getNextEntry();
-            out.println("Unziping " + FILE_NAME);
+            logger.info("Unziping " + FILE_NAME);
             while (ze != null) {
 
                 String fileName = ze.getName();
                 File newFile = new File(outputFolder + File.separator + fileName);
 
-                System.out.println("Unziping : " + newFile.getAbsoluteFile());
+                logger.info("Unziping : " + newFile.getAbsoluteFile());
 
                 //create all non exists folders
                 //else you will hit FileNotFoundException for compressed folder
@@ -284,7 +284,7 @@ public class ChainRunnerPopularity extends ProcessChain {
             zis.closeEntry();
             zis.close();
 
-            System.out.println(FILE_NAME + " Unziped.");
+            logger.info(FILE_NAME + " Unziped.");
         } catch (FileNotFoundException ex) {
             java.util.logging.Logger.getLogger(ChainRunnerPopularity.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
