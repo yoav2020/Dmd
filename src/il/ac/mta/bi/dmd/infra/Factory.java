@@ -1,15 +1,12 @@
 package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerArffCreator;
-import il.ac.mta.bi.dmd.chain.runner.ChainRunnerBasicChecks;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerPopularity;
-import il.ac.mta.bi.dmd.chain.runner.ChainRunnerRedirectCheck;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerStripDomainName;
-import il.ac.mta.bi.dmd.chain.runner.ChainRunnerTLD;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
@@ -33,7 +30,7 @@ import org.apache.log4j.Logger;
 public final class Factory {
 
     private static Logger logger = Logger.getLogger(BackEndServer.class);
-    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(3);
+    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(512);
     private static Factory theFactory = null;
 
     private Factory() {
@@ -130,9 +127,9 @@ public final class Factory {
         ChainRunnerValidate chainRunnderValidate = new ChainRunnerValidate();
         processingChain.addToChain(chainRunnderValidate);
 
-        /* ChainRunnerRedirectCheck */
+        /* ChainRunnerRedirectCheck 
         ChainRunnerRedirectCheck chainRunnerRedirectCheck = new ChainRunnerRedirectCheck();
-        processingChain.addToChain(chainRunnerRedirectCheck);
+        processingChain.addToChain(chainRunnerRedirectCheck);*/
         
         /* ChainRunnerStripDomainName */
         ChainRunnerStripDomainName chainRunnerStripDomainName = new ChainRunnerStripDomainName();
@@ -142,13 +139,13 @@ public final class Factory {
         ChainRunnerPopularity chainRunnerPopularity = new ChainRunnerPopularity();
         processingChain.addToChain(chainRunnerPopularity);
 
-        /* ChainRunnerTLD */
+        /* ChainRunnerTLD 
         ChainRunnerTLD chainRunnerTLD = new ChainRunnerTLD();
-        processingChain.addToChain(chainRunnerTLD);
+        processingChain.addToChain(chainRunnerTLD);*/
         
-        /* ChainRunnerTLD */
+        /* ChainRunnerTLD 
         ChainRunnerBasicChecks chainRunnerBasicChecks = new ChainRunnerBasicChecks();
-        processingChain.addToChain(chainRunnerBasicChecks);
+        processingChain.addToChain(chainRunnerBasicChecks);*/
         
         /* ChainRunnerDictRatio*/
         ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();
