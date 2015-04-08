@@ -37,7 +37,11 @@ public class SimpleFileDataSource extends DataSource {
 		
 			while ((line = reader.readLine()) != null) {
 				domainName = line.split(" ")[0];
-				classification = line.split(" ")[1];
+				if (line.split(" ").length == 2) {
+					classification = line.split(" ")[1];
+				} else {
+					classification = "UNKNOWN";
+				}
 				
 				DomainToAnalyze domainToAnalyze=
 				Factory.getFactory().getDomainToAnalyze(domainName, classification);

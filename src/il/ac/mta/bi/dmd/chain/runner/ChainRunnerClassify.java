@@ -38,7 +38,14 @@ public class ChainRunnerClassify extends ProcessChain {
 				
 				System.out.println(domainToAnalyze.getDomainName() + " class: ");
 				System.out.println("malicious chance=" + result[0]);
-				System.out.println("benign chance=" + result[1]);
+				System.out.println("benign chance=" + result[1]);	
+				
+				if (result[0] > result[1]) {
+					logger.info("domain is MALICIOUS");
+				} else {
+					logger.info("domain is BENIGN");
+				}
+				
 				System.out.println();
 			} else {
 				logger.info("domain type is known, nothing to do");
