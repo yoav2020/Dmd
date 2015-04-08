@@ -23,7 +23,7 @@ public class BackEndServer {
 		//initFetcher();
 		
 		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("supremeacoustics.co.uk", Classification.UNKNOWN);
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("facebook.com", Classification.UNKNOWN);
 		dispatchQueue.add(a1);
 		
 		/* PLACE HOLDER END */

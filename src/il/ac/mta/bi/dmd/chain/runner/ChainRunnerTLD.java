@@ -31,7 +31,7 @@ public class ChainRunnerTLD extends ProcessChain {
         feature.setValue(strTld);
         
         // Exit
-        logger.info("Finished checking domain. TLD is ");
+        logger.info("Finished checking domain. TLD is " + strTld);
         flush();
     }
 
