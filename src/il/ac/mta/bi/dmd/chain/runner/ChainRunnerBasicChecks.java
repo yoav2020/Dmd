@@ -1,14 +1,13 @@
 package il.ac.mta.bi.dmd.chain.runner;
 
-import com.google.common.net.InternetDomainName;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.infra.Factory;
-import static java.lang.System.out;
-import java.util.List;
+
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 

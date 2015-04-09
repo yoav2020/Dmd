@@ -42,11 +42,11 @@ public class ChainRunnerClassify extends ProcessChain {
 				
 				if (result[0] > result[1]) {
 					logger.info("domain is MALICIOUS");
+					System.out.println("domain is MALICIOUS");	
 				} else {
 					logger.info("domain is BENIGN");
+					System.out.println("domain is BENIGN");	
 				}
-				
-				System.out.println();
 			} else {
 				logger.info("domain type is known, nothing to do");
 			}

@@ -1,12 +1,15 @@
 package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerArffCreator;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerBasicChecks;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDnsLookup;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerPopularity;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerRedirectCheck;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerStripDomainName;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerTLD;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerWhoisQuery;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
@@ -139,13 +142,13 @@ public final class Factory {
         ChainRunnerPopularity chainRunnerPopularity = new ChainRunnerPopularity();
         processingChain.addToChain(chainRunnerPopularity);
 
-        /* ChainRunnerTLD 
+        /* ChainRunnerTLD */
         ChainRunnerTLD chainRunnerTLD = new ChainRunnerTLD();
-        processingChain.addToChain(chainRunnerTLD);*/
+        processingChain.addToChain(chainRunnerTLD);
         
-        /* ChainRunnerTLD 
+        /* ChainRunnerTLD */
         ChainRunnerBasicChecks chainRunnerBasicChecks = new ChainRunnerBasicChecks();
-        processingChain.addToChain(chainRunnerBasicChecks);*/
+        processingChain.addToChain(chainRunnerBasicChecks);
         
         /* ChainRunnerDictRatio*/
         ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();
@@ -163,15 +166,15 @@ public final class Factory {
         ChainRunnerArffCreator chainRunnerArffCreator = new ChainRunnerArffCreator();
         processingChain.addToChain(chainRunnerArffCreator);
 
-        /* ChainRunnerClassifierBuilder (j48)*/
-        ChainRunnerClassifierBuilder chainRunnerClassifierBuilderJ48
-                = new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.J48);
-        processingChain.addToChain(chainRunnerClassifierBuilderJ48);
-
         /* ChainRunnerClassifierBuilder (NaiveBayes) */
         ChainRunnerClassifierBuilder chainRunnerClassifierBuilderNaive
                 = new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.NaiveBayesUpdateable);
         processingChain.addToChain(chainRunnerClassifierBuilderNaive);
+        
+        /* ChainRunnerClassifierBuilder (j48)*/
+        ChainRunnerClassifierBuilder chainRunnerClassifierBuilderJ48
+                = new ChainRunnerClassifierBuilder(ChainRunnerClassifierBuilder.ClassifierType.J48);
+        processingChain.addToChain(chainRunnerClassifierBuilderJ48);
 
         /* ChainRunnerClassify*/
         ChainRunnerClassify chainRunnerClassify = new ChainRunnerClassify();

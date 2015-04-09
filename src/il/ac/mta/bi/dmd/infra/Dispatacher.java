@@ -18,6 +18,7 @@ public class Dispatacher {
 	
 	public void run() {
 		int total = 0;
+		int total_errors = 0;
 		
 		while(true) {
 			try {
@@ -28,6 +29,7 @@ public class Dispatacher {
 				
 				if (nextChain == null) {
 					if (chain.getStatus() == ProcessingChain.chainStatus.ERROR) {
+						total_errors ++;
 						logger.warn(domainToAnalyze.getDomainName() + " handling finished with errors, last chain is: " +
 								chain.getLastChain().getChainName());
 					} else {
@@ -36,6 +38,8 @@ public class Dispatacher {
 					
 					total ++;
 					System.out.println("total domains classified: " + total + 
+							"; errors: " + 
+							total_errors + 
 							"; remaining in queue: " + 
 							dispatchQueue.size());
 					continue;

@@ -1,9 +1,11 @@
 package il.ac.mta.bi.dmd.chain.runner;
 
+import static java.lang.Integer.parseInt;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.infra.Factory;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,9 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import static java.lang.Integer.parseInt;
-import org.apache.log4j.Logger;
-import static java.lang.System.out;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -25,6 +24,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.apache.log4j.Logger;
 
 /**
  * This class checks the rank of a given domain. It downloads a csv from alexa

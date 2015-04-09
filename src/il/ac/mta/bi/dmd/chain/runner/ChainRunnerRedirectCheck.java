@@ -1,25 +1,25 @@
 package il.ac.mta.bi.dmd.chain.runner;
 
-import com.google.common.net.InternetDomainName;
-import static il.ac.mta.bi.dmd.chain.runner.ChainRunnerValidate.logger;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.infra.Factory;
+
 import java.io.IOException;
-import static java.lang.System.out;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.log4j.Logger;
 
 /**
- * This chain checks for redirects
+ * This chain checks for redirects.
+ * IsRedirect = 0 // no redirect
+ * IsRedirect = 1 // redirect found
+ * IsRedirect = 2 // network error
  * @author Mike
  */
 public class ChainRunnerRedirectCheck extends ProcessChain {
@@ -85,15 +85,17 @@ public class ChainRunnerRedirectCheck extends ProcessChain {
         } catch (MalformedURLException ex) {
             logger.info(strUrl + " is unformated url. ");
             bError = true;
-            java.util.logging.Logger.getLogger(ChainRunnerRedirectCheck.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnknownHostException ex) {
             // Host not found
             logger.info(strUrl + " is unknown host.");
             bError = true;
-            java.util.logging.Logger.getLogger(ChainRunnerRedirectCheck.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(ChainRunnerRedirectCheck.class.getName()).log(Level.SEVERE, null, ex);
-            setStatus(ProcessingChain.chainStatus.ERROR);
+            logger.info("connection error");
+            bError = true;
+        } finally {
+        	if(bError == true) {
+        		feature.setValue(2);
+        	}
         }
 
         // Exit
