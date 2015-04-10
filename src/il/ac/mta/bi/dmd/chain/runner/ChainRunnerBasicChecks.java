@@ -40,9 +40,12 @@ public class ChainRunnerBasicChecks extends ProcessChain {
     public void run() {
         logger.info("Getting " + domainToAnalyze.getDomainName() + " basic checks.");
         String strDomain = domainToAnalyze.getDomainName();
+        Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
+        String TLD = (String) featuresMap.get("TopLevelDomain").getValue();
 
-        // Getting length
-        int nLength = strDomain.length();
+        // Getting length of the domain; make sure to remove TLD and it's
+        // preceding dot.
+        int nLength = strDomain.length() - TLD.length() - 1;
 
         // Check for ip address
         int nIsIpAdd = 0;
@@ -55,8 +58,6 @@ public class ChainRunnerBasicChecks extends ProcessChain {
         }
 
         int nDotsCount = StringUtils.countMatches(strDomain, ".");
-
-        Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
 
         // Update the map
         featuresMap.get(DOMAIN_LENGTH).setValue(nLength);

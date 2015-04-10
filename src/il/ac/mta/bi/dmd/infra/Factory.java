@@ -146,7 +146,7 @@ public final class Factory {
         ChainRunnerTLD chainRunnerTLD = new ChainRunnerTLD();
         processingChain.addToChain(chainRunnerTLD);
         
-        /* ChainRunnerTLD */
+        /* ChainRunnerBasic */
         ChainRunnerBasicChecks chainRunnerBasicChecks = new ChainRunnerBasicChecks();
         processingChain.addToChain(chainRunnerBasicChecks);
         

@@ -19,12 +19,12 @@ public class BackEndServer {
 	public void start() {
 		logger.info("backend start");
 		
-		/* edit \data\input.txt to load domains from files by fetcher */
-		initFetcher();
+		/* edit \data\input.txt to load domains from files by fetcher 
+		initFetcher();*/
 		
-		/* PLACE HOLDER START*/
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("thesystemupdate.education", Classification.UNKNOWN);
-		dispatchQueue.add(a1); 
+		/* PLACE HOLDER START */
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("vev.ru", Classification.UNKNOWN);
+		dispatchQueue.add(a1);
 		
 		/* PLACE HOLDER END */
 		dispatcher.run();
@@ -40,8 +40,8 @@ public class BackEndServer {
 		
 		/* SimpleFileDataSource */
 		SimpleFileDataSource dataSource = new SimpleFileDataSource();
-		dataSource.setFileName("data\\input.txt");
-		//dataSource.setFileName("data\\test_input.txt");
+		//dataSource.setFileName("data\\input.txt");
+		dataSource.setFileName("data\\test_input.txt");
 		fetcher.addSource(dataSource);
 	}
 	

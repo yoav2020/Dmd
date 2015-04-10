@@ -125,6 +125,7 @@ public class WhoisLookup {
 		   */
 		  response.remove(0);
 		  
+		  logger.info("starting to parse results");
 		  for (String line : response) {
 			  try {
 				WhoisQueryResultsList.add(parseWhoisLine(line));

@@ -31,22 +31,7 @@ public class ChainRunnerClassify extends ProcessChain {
 						(Instance) domainToAnalyze.getPropertiesMap().get("instanceData");
 				double[] result = classifierWrapper.classifyInstance(instanceData);
 				
-				logger.info("classifier name=" + classifierWrapper.getNickName());
-				
-				logger.info("malicious chance=" + result[0]);
-				logger.info("benign chance=" + result[1]);
-				
-				System.out.println(domainToAnalyze.getDomainName() + " class: ");
-				System.out.println("malicious chance=" + result[0]);
-				System.out.println("benign chance=" + result[1]);	
-				
-				if (result[0] > result[1]) {
-					logger.info("domain is MALICIOUS");
-					System.out.println("domain is MALICIOUS");	
-				} else {
-					logger.info("domain is BENIGN");
-					System.out.println("domain is BENIGN");	
-				}
+				logClassification(classifierWrapper, result);
 			} else {
 				logger.info("domain type is known, nothing to do");
 			}
@@ -56,5 +41,33 @@ public class ChainRunnerClassify extends ProcessChain {
 		}
 		
 		flush();
+	}
+
+	private void logClassification(ClassifierWrapper classifierWrapper,
+			double[] result) {
+		logger.info("classifier name=" + classifierWrapper.getNickName());
+		logger.info("malicious chance=" + result[0]);
+		logger.info("benign chance=" + result[1]);
+
+		System.out.println(domainToAnalyze.getDomainName() + " class: ");
+		System.out.println("malicious chance=" + result[0]);
+		System.out.println("benign chance=" + result[1]);	
+		
+		if (0 < (Integer)domainToAnalyze.getFeaturesMap().get("domainRecords").getValue() ) {
+			logger.info("domain is alive");
+			System.out.println("domain is alive");
+		}else {
+			logger.info("domain is down");
+			System.out.println("domain is dead");
+		}
+		
+		if (result[0] > result[1]) {
+			logger.info("domain is MALICIOUS");
+			System.out.println("domain is MALICIOUS");	
+		} else {
+			logger.info("domain is BENIGN");
+			System.out.println("domain is BENIGN");	
+		}
+		System.out.println("---------------");	
 	}
 }

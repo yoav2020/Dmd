@@ -23,24 +23,32 @@ public class ChainRunnerTLD extends ProcessChain {
 
     @Override
     public void run() {
+        Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
+        Feature feature = featuresMap.get(FEATURE_NAME);
+        String strTld = null;
+        
     	try {
 	        logger.info("Getting " + domainToAnalyze.getDomainName() + " top level domain.");
-	        // Get the TLD
-	        String strTld = InternetDomainName.from(domainToAnalyze.getDomainName()).publicSuffix().name();
-	        logger.info("Checking domain " + domainToAnalyze.getDomainName() + " publicSufix is : " + strTld);
 	        
-	        // Update the features map
-	        Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
-	        Feature feature = featuresMap.get(FEATURE_NAME);
-	        feature.setValue(strTld);
+	        // Get the TLD. If the TLD is not common, assume it is the last dot followed
+	        // string
 	        
-	        // Exit
-	        logger.info("Finished checking domain. TLD is " + strTld);
+	        if (InternetDomainName.from(domainToAnalyze.getDomainName()).publicSuffix() == null) {
+	    		logger.info("found a non common TLD");
+	    		String [] domSplit = domainToAnalyze.getDomainName().split("\\.");
+	    		strTld = domSplit[domSplit.length-1];
+	        } else {
+	        	strTld = InternetDomainName.from(domainToAnalyze.getDomainName()).publicSuffix().name();
+	        }
+
+            feature.setValue(strTld);
+            logger.info("Finished checking domain. TLD= " + strTld);
+            
     	} catch (Exception e) {
 			logger.error("caught exception ", e);
 			setStatus(ProcessingChain.chainStatus.ERROR);
     	}
-	    flush();
+		flush();
     }
 
 }

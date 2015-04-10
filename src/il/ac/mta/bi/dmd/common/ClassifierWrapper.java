@@ -18,7 +18,7 @@ public class ClassifierWrapper {
 	private Classifier classifier;
 	private Instances dataSet;
 	private Evaluation eval;
-	private Integer totalClassifications = 0;
+	private Integer totalUpdates = 0;
 	private String modelOutputDir;
 	private Integer classifierCode;
 	private String nickName; 
@@ -39,22 +39,23 @@ public class ClassifierWrapper {
 	}
 	
 	public void evaluateModel(Instance instanceData) throws Exception {
-		totalClassifications ++;
+		totalUpdates ++;
 		
 		dataSet.add(instanceData);
 		eval.evaluateModel(classifier, dataSet);
 	}
 	
 	public void updateClassifier(Instance instanceData) throws Exception {
-		totalClassifications ++;
+		totalUpdates ++;
 		
 		if (classifier instanceof UpdateableClassifier) {
 			UpdateableClassifier updateableClassifier =
 					(UpdateableClassifier) this.classifier;
 			updateableClassifier.updateClassifier(instanceData);
 		} else { 
-			if (totalClassifications % CLASS_BUILD_RATIO == 0) {
+			if (totalUpdates % CLASS_BUILD_RATIO == 0) {
 				dataSet.add(instanceData);
+				logger.info("rebuilding classifier...");
 				classifier.buildClassifier(dataSet);
 			}
 		}
@@ -78,7 +79,7 @@ public class ClassifierWrapper {
 	}
 
 	public Integer getTotalClassifications() {
-		return totalClassifications;
+		return totalUpdates;
 	}
 	
 	public void deSerialize() throws ClassNotFoundException, IOException {
