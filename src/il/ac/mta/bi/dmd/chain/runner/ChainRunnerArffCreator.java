@@ -64,9 +64,9 @@ public class ChainRunnerArffCreator extends ProcessChain {
 		Map<String, Feature> featuresMap = domainToAnalyze.getFeaturesMap();
 		Instance instanceData = new SparseInstance(featuresMap.size());
 		Instances dataSet = new Instances("Domain class relation", fvWekaAttributes, 0);
+		dataSet.setClassIndex(dataSet.numAttributes()-1);
 		int attIndex = 0;
 		instanceData.setDataset(dataSet);
-		dataSet.setClassIndex(dataSet.numAttributes()-1);
 		
 		for (Feature feature : featuresMap.values()) {
 			switch (feature.getType()) {

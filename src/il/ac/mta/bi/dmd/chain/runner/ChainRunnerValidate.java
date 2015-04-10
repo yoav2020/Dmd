@@ -1,5 +1,8 @@
 package il.ac.mta.bi.dmd.chain.runner;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 
@@ -16,13 +19,27 @@ import org.apache.log4j.Logger;
 public class ChainRunnerValidate extends ProcessChain {
 	static Logger logger = Logger.getLogger(ChainRunnerDnsLookup.class);
 	
+    private static final String IPADDRESS_PATTERN
+    = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+    + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+    + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+    + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+	
 	public ChainRunnerValidate() {
 		setChainName("Domain Validator");
 	}
 	
 	@Override
 	public void run() {
-		if (!DomainValidator.getInstance().isValid(domainToAnalyze.getDomainName())) {
+		logger.info("validating domain: " + domainToAnalyze.getDomainName());
+		
+        Pattern ipAddressPattern = Pattern.compile(IPADDRESS_PATTERN);
+        Matcher matcher = ipAddressPattern.matcher(domainToAnalyze.getDomainName());
+        boolean domainIsIpAdress = matcher.matches();
+        
+        if (domainIsIpAdress) {
+        	logger.info("domain is a valid IP address");
+        } else if (!DomainValidator.getInstance().isValid(domainToAnalyze.getDomainName())) {
 			logger.info("domain is INVALID");
 			setStatus(ProcessingChain.chainStatus.ERROR);
 		}

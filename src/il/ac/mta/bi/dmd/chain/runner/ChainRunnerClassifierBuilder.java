@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.classifiers.trees.J48;
+import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -101,12 +102,13 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 	}
 
 	private ClassifierWrapper getClassifier() throws Exception {
-		Instances dataSet = (Instances) domainToAnalyze.getPropertiesMap().get("dataSet");
 		Integer classifierCode = (Integer) domainToAnalyze.getPropertiesMap().get("fvWekaAttributesHash");
+		FastVector fvWekaAttributes = 
+				(FastVector) domainToAnalyze.getPropertiesMap().get("fvWekaAttributes");
 		
 		logger.info("creating classifier, type=" + myType.toString());
 
-		ClassifierWrapper classifierWrapper = generateClassifier(dataSet, classifierCode);
+		ClassifierWrapper classifierWrapper = generateClassifier(fvWekaAttributes, classifierCode);
 		try {
 			classifierWrapper.deSerialize();
 		} catch (Exception e) {
@@ -118,7 +120,7 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 		return classifierWrapper;
 	}
 
-	private ClassifierWrapper generateClassifier(Instances dataSet,
+	private ClassifierWrapper generateClassifier(FastVector fvWekaAttributes,
 			Integer classifierCode) throws Exception {
 		ClassifierWrapper classifierWrapper = null;
 		
@@ -134,6 +136,10 @@ public class ChainRunnerClassifierBuilder extends ProcessChain {
 			classifierWrapper.setNickName(ClassifierType.NaiveBayesUpdateable.toString());
 			break;
 		}
+		
+		/* clone dataSet in case more than one classifier will use it */
+		Instances dataSet = new Instances("Domain class relation", fvWekaAttributes, 0);
+		dataSet.setClassIndex(dataSet.numAttributes()-1);
 		
 		classifierWrapper.buildClassifier(dataSet);
 		classifierWrapper.setDataSet(dataSet);

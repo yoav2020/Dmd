@@ -22,9 +22,9 @@ public class BackEndServer {
 		/* edit \data\input.txt to load domains from files by fetcher */
 		initFetcher();
 		
-		/* PLACE HOLDER START 
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("bbeautilicious.com", Classification.UNKNOWN);
-		dispatchQueue.add(a1);*/
+		/* PLACE HOLDER START */
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("forworanamingc.co7.us", Classification.UNKNOWN);
+		dispatchQueue.add(a1);
 		
 		/* PLACE HOLDER END */
 		dispatcher.run();

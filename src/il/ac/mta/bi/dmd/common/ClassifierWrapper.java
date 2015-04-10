@@ -1,10 +1,13 @@
 package il.ac.mta.bi.dmd.common;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import org.apache.log4j.Logger;
 
@@ -22,7 +25,8 @@ public class ClassifierWrapper {
 	private String modelOutputDir;
 	private Integer classifierCode;
 	private String nickName; 
-	private static final Integer CLASS_BUILD_RATIO = 5;
+	private static final Integer CLASS_BUILD_RATIO = 500;
+	private static final Integer CLASS_DATA_WRITE = 1000;
 	
 	private static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
 	
@@ -39,24 +43,43 @@ public class ClassifierWrapper {
 	}
 	
 	public void evaluateModel(Instance instanceData) throws Exception {
-		totalUpdates ++;
-		
 		dataSet.add(instanceData);
 		eval.evaluateModel(classifier, dataSet);
 	}
 	
 	public void updateClassifier(Instance instanceData) throws Exception {
+		dataSet.add(instanceData);
 		totalUpdates ++;
 		
+		/* rebuild/update the classifier */
 		if (classifier instanceof UpdateableClassifier) {
+			logger.info("updating classifier...");
 			UpdateableClassifier updateableClassifier =
 					(UpdateableClassifier) this.classifier;
 			updateableClassifier.updateClassifier(instanceData);
 		} else { 
 			if (totalUpdates % CLASS_BUILD_RATIO == 0) {
-				dataSet.add(instanceData);
 				logger.info("rebuilding classifier...");
 				classifier.buildClassifier(dataSet);
+			}
+		}
+		 
+		/* write down the arff file */
+		if (totalUpdates % CLASS_DATA_WRITE == 0) {
+			String arffFullPathName = classifierCode + "_" + nickName + ".arff";
+			arffFullPathName = modelOutputDir + "\\" + arffFullPathName;
+			
+			logger.info("writing Classifier total arff data to " +
+					arffFullPathName);
+			Writer writer = null;
+			try {
+			    writer = new BufferedWriter(new OutputStreamWriter(
+			          new FileOutputStream(arffFullPathName), "utf-8"));
+			    writer.write(dataSet.toString());
+			} catch (IOException e) {
+			  logger.error("caught exception ", e);
+			} finally {
+			   writer.close();
 			}
 		}
 	}
