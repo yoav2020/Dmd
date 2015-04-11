@@ -2,6 +2,7 @@ package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
+import il.ac.mta.bi.dmd.data.sources.LocalServerDataSource;
 import il.ac.mta.bi.dmd.data.sources.SimpleFileDataSource;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,21 +16,25 @@ public class BackEndServer {
 	private LinkedBlockingQueue<DomainToAnalyze> dispatchQueue = 
 			new LinkedBlockingQueue<DomainToAnalyze>();
 	private Dispatacher dispatcher = new Dispatacher(dispatchQueue);
+	private static Integer userServicePortNum = 4321;
 
 	public void start() {
 		logger.info("backend start");
+		System.out.println("Server backend started");
+		System.out.println("Listening for user input on port: " + userServicePortNum);
 		
 		/* edit \data\input.txt to load domains from files by fetcher */
 		initFetcher();
 		
-		/* PLACE HOLDER START */
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("forworanamingc.co7.us", Classification.UNKNOWN);
-		dispatchQueue.add(a1);
+		/*
+		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("wlzjx.net", Classification.UNKNOWN);
+		dispatchQueue.add(a1);*/
 		
-		/* PLACE HOLDER END */
 		dispatcher.run();
 
 		logger.info("backend end");
+		System.out.println("Server backend terminated");
+
 		fini();
 	}
 
@@ -38,11 +43,16 @@ public class BackEndServer {
 		fetcher.setDispatchQueue(dispatchQueue);
 		fetcher.init();
 		
-		/* SimpleFileDataSource */
+		/* SimpleFileDataSource 
 		SimpleFileDataSource dataSource = new SimpleFileDataSource();
 		dataSource.setFileName("data\\input.txt");
 		//dataSource.setFileName("data\\test_input.txt");
-		fetcher.addSource(dataSource);
+		fetcher.addSource(dataSource);*/
+		
+		/*LocalServerDataSource */
+		LocalServerDataSource userLocalServerDataSource = 
+				new LocalServerDataSource(userServicePortNum);
+		fetcher.addSource(userLocalServerDataSource);
 	}
 	
 	protected void fini() {

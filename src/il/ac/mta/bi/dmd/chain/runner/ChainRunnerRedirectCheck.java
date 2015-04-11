@@ -2,7 +2,6 @@ package il.ac.mta.bi.dmd.chain.runner;
 
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessChain;
-import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.infra.Factory;
 
 import java.io.IOException;
@@ -11,15 +10,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 
 /**
- * This chain checks for redirects.
- * IsRedirect = 0 // no redirect
- * IsRedirect = 1 // redirect found
- * IsRedirect = 2 // network error
+ * Not used
  * @author Mike
  */
 public class ChainRunnerRedirectCheck extends ProcessChain {
@@ -41,14 +36,12 @@ public class ChainRunnerRedirectCheck extends ProcessChain {
         boolean bError = false;
         boolean bRedirect = false;
         String strUrlHTTP = "";
-        String strUrlHTTPS = "";
         String strUrl = "";
         String strDomain = domainToAnalyze.getDomainName();
 
         // Check if the domain contains http or https, if not, add.
         if (!(strDomain.contains("http://") || strDomain.contains("https://"))) {
             strUrlHTTP = "http://" + domainToAnalyze.getDomainName(); // adding protocol
-            strUrlHTTPS = "https://" + domainToAnalyze.getDomainName(); // adding protocol
         }
         
         String strLocation = strDomain;

@@ -32,7 +32,6 @@ public class ChainRunnerTLD extends ProcessChain {
 	        
 	        // Get the TLD. If the TLD is not common, assume it is the last dot followed
 	        // string
-	        
 	        if (InternetDomainName.from(domainToAnalyze.getDomainName()).publicSuffix() == null) {
 	    		logger.info("found a non common TLD");
 	    		String [] domSplit = domainToAnalyze.getDomainName().split("\\.");

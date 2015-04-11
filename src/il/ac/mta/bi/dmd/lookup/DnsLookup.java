@@ -38,6 +38,7 @@ public class DnsLookup {
         	} else {
 				rec = Record.newRecord(new Name(host), type, DClass.IN);
     		}
+        	
 	        Message query = Message.newQuery(rec);
 	        SimpleResolver simpleResolver = new SimpleResolver(dnsServerIpAddress);
 	        simpleResolver.setTimeout(5);

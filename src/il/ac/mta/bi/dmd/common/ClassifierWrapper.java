@@ -3,6 +3,7 @@ package il.ac.mta.bi.dmd.common;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,7 +27,6 @@ public class ClassifierWrapper {
 	private Integer classifierCode;
 	private String nickName; 
 	private static final Integer CLASS_BUILD_RATIO = 500;
-	private static final Integer CLASS_DATA_WRITE = 1000;
 	
 	private static Logger 	logger = Logger.getLogger(ClassifierWrapper.class);
 	
@@ -43,7 +43,6 @@ public class ClassifierWrapper {
 	}
 	
 	public void evaluateModel(Instance instanceData) throws Exception {
-		dataSet.add(instanceData);
 		eval.evaluateModel(classifier, dataSet);
 	}
 	
@@ -61,25 +60,6 @@ public class ClassifierWrapper {
 			if (totalUpdates % CLASS_BUILD_RATIO == 0) {
 				logger.info("rebuilding classifier...");
 				classifier.buildClassifier(dataSet);
-			}
-		}
-		 
-		/* write down the arff file */
-		if (totalUpdates % CLASS_DATA_WRITE == 0) {
-			String arffFullPathName = classifierCode + "_" + nickName + ".arff";
-			arffFullPathName = modelOutputDir + "\\" + arffFullPathName;
-			
-			logger.info("writing Classifier total arff data to " +
-					arffFullPathName);
-			Writer writer = null;
-			try {
-			    writer = new BufferedWriter(new OutputStreamWriter(
-			          new FileOutputStream(arffFullPathName), "utf-8"));
-			    writer.write(dataSet.toString());
-			} catch (IOException e) {
-			  logger.error("caught exception ", e);
-			} finally {
-			   writer.close();
 			}
 		}
 	}
@@ -111,17 +91,31 @@ public class ClassifierWrapper {
 		modelFullPathName = modelOutputDir + "\\" + modelFullPathName;
 				
 		java.io.File fileModel = new java.io.File(modelFullPathName);
-		
-		if(fileModel.exists() == false) {
-			return;
+		if(fileModel.exists()) {
+			logger.info("reading model from " + modelFullPathName);
+			logger.info("deserializing model...");
+			
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileModel));
+			classifier = (Classifier) ois.readObject();
+			ois.close();
+			
+			logger.info("model deserialized successfully");
 		}
 		
-		logger.info("reading model from " + modelFullPathName);
-		logger.info("deserializing model...");
+		String arffFullPathName = classifierCode + "_" + nickName + ".arff";
+		arffFullPathName = modelOutputDir + "\\" + arffFullPathName;
 		
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileModel));
-		classifier = (Classifier) ois.readObject();
-		ois.close();
+		java.io.File fileArff = new java.io.File(arffFullPathName);
+		if(fileArff.exists()) {
+			logger.info("reading arff data from " + arffFullPathName);
+			logger.info("reading arff data...");
+			
+			dataSet = new Instances(new FileReader(fileArff));
+			
+			logger.info("arff data read successfully, num of instances read=" + 
+					dataSet.numInstances());
+		}
+		
 	}
 	
 	public void serialize() throws IOException {
@@ -130,13 +124,23 @@ public class ClassifierWrapper {
 		modelFullPathName = modelOutputDir + "\\" + modelFullPathName;
 		
 		logger.info("serializing model");
-		
 		logger.info("writing model to " + modelFullPathName);
 		
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFullPathName));
 		oos.writeObject(classifier);
 		oos.flush();
 		oos.close();
+		
+		String arffFullPathName = classifierCode + "_" + nickName + ".arff";
+		arffFullPathName = modelOutputDir + "\\" + arffFullPathName;
+		
+		logger.info("wariting arff data"); 
+		logger.info("writing Classifier arff data to " +
+				arffFullPathName);
+		Writer writer = new BufferedWriter(new OutputStreamWriter(
+			new FileOutputStream(arffFullPathName), "utf-8"));
+		writer.write(dataSet.toString());
+		writer.close();
 	}
 
 	public String getModelOutputDir() {
