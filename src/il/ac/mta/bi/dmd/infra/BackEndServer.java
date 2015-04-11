@@ -21,14 +21,10 @@ public class BackEndServer {
 	public void start() {
 		logger.info("backend start");
 		System.out.println("Server backend started");
-		System.out.println("Listening for user input on port: " + userServicePortNum);
+		System.out.println("Listening for user input on port: " + userServicePortNum + "\n");
 		
 		/* edit \data\input.txt to load domains from files by fetcher */
 		initFetcher();
-		
-		/*
-		DomainToAnalyze a1 = Factory.getFactory().getDomainToAnalyze("wlzjx.net", Classification.UNKNOWN);
-		dispatchQueue.add(a1);*/
 		
 		dispatcher.run();
 
