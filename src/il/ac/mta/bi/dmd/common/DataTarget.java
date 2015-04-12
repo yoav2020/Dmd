@@ -13,7 +13,7 @@ public abstract class DataTarget {
 		return targetName;
 	}
 	
-	public void setSourceName(String targetName) {
+	public void setTargetName(String targetName) {
 		this.targetName = targetName;
 	}
 	

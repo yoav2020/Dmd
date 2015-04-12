@@ -22,8 +22,8 @@ static Logger logger = Logger.getLogger(Saver.class);
 		return theSaver;
 	}
 	
-	public void addSaver(DataTarget target) {
-		logger.info("added save location " + target.getSourceName());
+	public void setDataTarget(DataTarget target) {
+		logger.info("added data target " + target.getSourceName());
 		targets.add(target);
 	}
 	

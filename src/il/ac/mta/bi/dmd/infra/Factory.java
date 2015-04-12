@@ -32,7 +32,8 @@ import org.apache.log4j.Logger;
 public final class Factory {
 
     private static Logger logger = Logger.getLogger(BackEndServer.class);
-    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(512);
+    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(256);
+    private ScheduledThreadPoolExecutor executorServiceServer = new ScheduledThreadPoolExecutor(256);
     private static Factory theFactory = null;
 
     private Factory() {
@@ -228,6 +229,16 @@ public final class Factory {
     public void execForRunnableTask(Runnable task) {
         logger.info("executing task " + task.toString());
         executorService.execute(task);
+    }
+    
+    /**
+     * Executes a Runnable task to run in a separate thread for server connection
+     *
+     * @param task - an object that performs the task when executed
+     */
+    public void execForRunnableTaskServer(Runnable task) {
+        logger.info("executing task " + task.toString());
+        executorServiceServer.execute(task);
     }
 
     /**

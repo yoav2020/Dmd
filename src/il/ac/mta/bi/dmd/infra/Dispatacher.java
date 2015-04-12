@@ -6,14 +6,17 @@ import il.ac.mta.bi.dmd.common.ProcessingChain;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class Dispatacher {
 	private LinkedBlockingQueue<DomainToAnalyze> dispatchQueue;
 	static Logger logger = Logger.getLogger(Dispatacher.class);
+	private Saver saver;
 	
 	public Dispatacher(LinkedBlockingQueue<DomainToAnalyze> dispatchQueue) {
 		this.dispatchQueue = dispatchQueue;
+		this.saver = Saver.getSaver();
 	}
 	
 	public void run() {
@@ -23,10 +26,16 @@ public class Dispatacher {
 		while(true) {
 			try {
 				DomainToAnalyze domainToAnalyze = dispatchQueue.take();
-				
 				ProcessingChain chain = domainToAnalyze.getChain();
+				
+				/* if it is the first chain - run saver */
+				if (chain.isFirstChain() == true) {
+					saver.save(domainToAnalyze);
+				}
+				
 				ProcessChain nextChain = chain.next();
 				
+				/* check if no more chains to go */
 				if (nextChain == null) {
 					if (chain.getStatus() == ProcessingChain.chainStatus.ERROR) {
 						total_errors ++;
@@ -37,7 +46,16 @@ public class Dispatacher {
 					}
 					
 					total ++;
-					System.out.println("total domains classified: " + total + 
+					
+					if (logger.isEnabledFor(Level.INFO)) {
+						System.out.println("total domains classified: " + total + 
+								"; errors: " + 
+								total_errors + 
+								"; remaining in queue: " + 
+								dispatchQueue.size());
+					}
+					
+					logger.info("total domains classified: " + total + 
 							"; errors: " + 
 							total_errors + 
 							"; remaining in queue: " + 

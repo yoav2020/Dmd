@@ -64,6 +64,10 @@ public class ClassifierWrapper {
 		}
 	}
 	
+	public double classifyInstanceShort(Instance instanceData) throws Exception {
+		return classifier.classifyInstance(instanceData);
+	}
+	
 	public double[] classifyInstance(Instance instanceData) throws Exception {
 		double[] result = classifier.distributionForInstance(instanceData);
 		return result;

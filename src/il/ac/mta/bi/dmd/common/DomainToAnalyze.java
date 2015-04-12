@@ -14,6 +14,8 @@ public class DomainToAnalyze {
 	private Map<String, Object> propertiesMap = new HashMap<String, Object>();
 	private ProcessingChain chain;
 	private Classification classification = Classification.UNKNOWN;
+	private double maliciousChance;
+	private double benignChance;
 	
 	public enum Classification {
 		UNKNOWN,
@@ -90,6 +92,17 @@ public class DomainToAnalyze {
 	public Classification getClassification() {
 		return classification;
 	}
+	
+	public void setClassification(double classification) {
+		if (classification == 0) {
+			this.classification = Classification.MALICIOUS;
+			return;
+		}
+		if (classification == 1) {
+			this.classification = Classification.BENIGN;
+			return;
+		}
+	}
 
 	public void setClassification(Classification classification) {
 		this.classification = classification;
@@ -126,6 +139,34 @@ public class DomainToAnalyze {
 
 	public void setDomainName(String domainName) {
 		this.domainName = domainName;
+	}
+	
+	public String toStringFull() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(domainName + " class:" + '\n');
+		sb.append("malicious chance=" + maliciousChance + '\n');
+		sb.append("benign chance=" + benignChance + '\n');
+		sb.append("domain is " + getClassification() + '\n');
+		sb.append("chain status: " + getChain().getStatus() + '\n');
+		sb.append("last chain: " + getChain().getCurrChain().getChainName());
+
+		return sb.toString();
+	}
+
+	public double getMaliciousChance() {
+		return maliciousChance;
+	}
+
+	public double getBenignChance() {
+		return benignChance;
+	}
+
+	public void setMaliciousChance(double maliciousChance) {
+		this.maliciousChance = maliciousChance;
+	}
+
+	public void setBenignChance(double benignChance) {
+		this.benignChance = benignChance;
 	}
 
 }

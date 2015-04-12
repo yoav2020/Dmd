@@ -24,6 +24,14 @@ public class ProcessingChain {
 		status = chainStatus.OK;
 	}
 	
+	public boolean isFirstChain() {
+		return iterator == null;
+	}
+	
+	public boolean isLastChain() {
+		return iterator.hasNext() == false;
+	}
+	
 	public void addToChain(ProcessChain processChain) {
 		chain.add(processChain);
 	}

@@ -1,7 +1,9 @@
 package il.ac.mta.bi.dmd.infra;
 
+import il.ac.mta.bi.dmd.common.DataTarget;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.data.sources.UiDataSource;
+import il.ac.mta.dmd.data.targets.UiDataTarget;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -20,8 +22,11 @@ public class BackEndServer {
 		logger.info("backend start");
 		System.out.println("Server backend started");
 		
-		/* edit \data\input.txt to load domains from files by fetcher */
+		/* data source */
 		initFetcher();
+		
+		/* data target */
+		initSaver();
 		
 		dispatcher.run();
 
@@ -29,6 +34,13 @@ public class BackEndServer {
 		System.out.println("Server backend terminated");
 
 		fini();
+	}
+	
+	private void initSaver() {
+		Saver saver = Saver.getSaver();
+		DataTarget dataTarget = new UiDataTarget(4322);
+		dataTarget.setTargetName("UI service target");
+		saver.setDataTarget(dataTarget);
 	}
 
 	private void initFetcher() {

@@ -1,6 +1,8 @@
 package il.ac.mta.bi.dmd.common;
 
 
+import il.ac.mta.bi.dmd.infra.Factory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,8 +36,7 @@ public class ServerWrapper {
 				ServerSocket serverSocket = new ServerSocket(listeningPort);
 				
 				/* start server loop */
-				Thread server = new Thread(new ServerLoop(serverSocket));
-				server.start();
+				Factory.getFactory().execForRunnableTaskServer(new ServerLoop(serverSocket));
 				
 				serverRunning = true;
 			} catch (IOException e) {
@@ -63,8 +64,7 @@ public class ServerWrapper {
 					logger.info("accepted connection from: " + clientSocket.getInetAddress() + " port: " + clientSocket.getPort());
 					
 					/* start server worker for handling the connection */
-					Thread serverWorker = new Thread(new ServerWorker(clientSocket));
-					serverWorker.start();
+					Factory.getFactory().execForRunnableTaskServer(new ServerWorker(clientSocket));
 					
 				} catch (IOException e) {
 					logger.error("failed to create client socket");
