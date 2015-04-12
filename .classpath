@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/weka-3.7.0.jar/weka-3.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/com.google.guava_1.6.0.jar/com.google.guava_1.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.3.jar"/>
+	<classpathentry kind="lib" path="lib/guava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

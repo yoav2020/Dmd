@@ -1,9 +1,7 @@
 package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
-import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
-import il.ac.mta.bi.dmd.data.sources.LocalServerDataSource;
-import il.ac.mta.bi.dmd.data.sources.SimpleFileDataSource;
+import il.ac.mta.bi.dmd.data.sources.UiDataSource;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -21,7 +19,6 @@ public class BackEndServer {
 	public void start() {
 		logger.info("backend start");
 		System.out.println("Server backend started");
-		System.out.println("Listening for user input on port: " + userServicePortNum + "\n");
 		
 		/* edit \data\input.txt to load domains from files by fetcher */
 		initFetcher();
@@ -45,10 +42,10 @@ public class BackEndServer {
 		//dataSource.setFileName("data\\test_input.txt");
 		fetcher.addSource(dataSource);*/
 		
-		/*LocalServerDataSource */
-		LocalServerDataSource userLocalServerDataSource = 
-				new LocalServerDataSource(userServicePortNum);
-		fetcher.addSource(userLocalServerDataSource);
+		/* uiDataSource */
+		UiDataSource uiDataSource = new UiDataSource(userServicePortNum);
+		uiDataSource.setSourceName("UI service source");
+		fetcher.addSource(uiDataSource);
 	}
 	
 	protected void fini() {
