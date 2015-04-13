@@ -118,6 +118,8 @@ public class ClassifierWrapper {
 			
 			logger.info("arff data read successfully, num of instances read=" + 
 					dataSet.numInstances());
+			
+			dataSet.setClassIndex(dataSet.numAttributes()-1);
 		}
 		
 	}

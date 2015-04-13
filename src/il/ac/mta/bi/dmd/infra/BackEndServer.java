@@ -2,6 +2,7 @@ package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.common.DataTarget;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
+import il.ac.mta.bi.dmd.data.sources.SimpleFileDataSource;
 import il.ac.mta.bi.dmd.data.sources.UiDataSource;
 import il.ac.mta.dmd.data.targets.UiDataTarget;
 
