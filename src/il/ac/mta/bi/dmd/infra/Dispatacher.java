@@ -60,6 +60,7 @@ public class Dispatacher {
 							total_errors + 
 							"; remaining in queue: " + 
 							dispatchQueue.size());
+					
 					continue;
 				}
 	

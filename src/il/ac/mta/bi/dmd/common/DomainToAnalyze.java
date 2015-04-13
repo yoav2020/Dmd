@@ -141,15 +141,27 @@ public class DomainToAnalyze {
 		this.domainName = domainName;
 	}
 	
+	@Override
+	public String toString() {
+		return getDomainName();
+	}
+	
 	public String toStringFull() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(domainName + " class:" + '\n');
+		sb.append(domainName + " classification:" + '\n');
+		sb.append("chain status: " + getChain().getStatus() + '\n');
+		sb.append("last chain: " + getChain().getCurrChain().getChainName()+ '\n');
+		sb.append('\n');
+		
+		for (Feature feature : featuresMap.values()) {
+			sb.append(feature.getName() + ": " + feature.getValue()  + '\n');
+		}
+		sb.append('\n');
+		
 		sb.append("malicious chance=" + maliciousChance + '\n');
 		sb.append("benign chance=" + benignChance + '\n');
 		sb.append("domain is " + getClassification() + '\n');
-		sb.append("chain status: " + getChain().getStatus() + '\n');
-		sb.append("last chain: " + getChain().getCurrChain().getChainName());
-
+		
 		return sb.toString();
 	}
 

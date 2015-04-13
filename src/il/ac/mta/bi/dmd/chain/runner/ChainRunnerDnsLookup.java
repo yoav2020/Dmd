@@ -28,7 +28,7 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 	static Logger 					logger = Logger.getLogger(ChainRunnerDnsLookup.class);
 	
 	private static final DnsLookup	dnsLookup = new DnsLookup();
-	private static final String 	DNS_SERVER = "8.8.8.8";
+	private static String 	dnsServer = "8.8.8.8";
 	private static final Integer	MAX_THREAD_COUNT = 64;
 	private static Semaphore 		chainRunnerDnsLookupSemaphore;
 	
@@ -50,6 +50,11 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 			Factory.getFactory().execForRunnableTask(new ChainRunnerDnsLookupConsumer());
 			chainRunnerDnsLookupSemaphore = new Semaphore(MAX_THREAD_COUNT, true);
 			isConsumerRunning = true;
+		}
+		
+		/* check property dns_server */
+		if(Factory.getFactory().getProperty("dns_server") != null)  {
+			dnsServer = Factory.getFactory().getProperty("dns_server");
 		}
 	}
 	
@@ -113,7 +118,7 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 				logger.info("creating lookup request for " + domainToAnalyze.getDomainName());
 				
 				Record [] domainRecords = dnsLookup.lookupTypeA(domainToAnalyze.getDomainName(), 
-						DNS_SERVER);
+						dnsServer);
 				
 				if(domainRecords != null) {
 					numOfRecords = domainRecords.length;

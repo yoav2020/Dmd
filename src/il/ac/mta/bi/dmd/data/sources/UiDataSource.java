@@ -24,12 +24,14 @@ public class UiDataSource extends DataSource implements IClientHandler  {
 		out.println("User load domain names, usage: <domain_name> [classification]. To exit, type \"$ exit\"");
 
 		while (true) {
-			out.print("> ");
 		    String line = in.readLine();
 		    
 		    if (line.equals("$ exit")) {
 		    	out.println("bye!");
 		    	return;
+		    }
+		    if (line.isEmpty()) {
+		    	continue;
 		    }
 		    
 		    out.println("loaded '" + line + "'");

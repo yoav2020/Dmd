@@ -16,6 +16,9 @@ import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -31,10 +34,11 @@ import org.apache.log4j.Logger;
  */
 public final class Factory {
 
-    private static Logger logger = Logger.getLogger(BackEndServer.class);
+    private static Logger logger = Logger.getLogger(Factory.class);
     private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(256);
     private ScheduledThreadPoolExecutor executorServiceServer = new ScheduledThreadPoolExecutor(256);
     private static Factory theFactory = null;
+    private Properties globalProperties = null;
 
     private Factory() {
     }
@@ -246,6 +250,30 @@ public final class Factory {
      */
     public void shutDownFactory() {
         executorService.shutdown();
+    }
+    
+    /**
+     * Get property value from global properties repository
+     */
+
+    public String getProperty(String propertyName) {
+    	if (globalProperties == null) {
+    		
+    		//load a properties file from class path
+    		
+    		try {
+    			String propertiesFileName = "conf\\config.properties";
+    			InputStream input = new FileInputStream(propertiesFileName);
+    			globalProperties = new Properties();
+    			
+				globalProperties.load(input);
+			} catch (Exception e) {
+				logger.warn("caught exception ", e);
+				return null;
+			} 
+    	}
+    	
+    	return globalProperties.getProperty(propertyName);
     }
 
 }

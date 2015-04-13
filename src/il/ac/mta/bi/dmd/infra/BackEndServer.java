@@ -16,7 +16,8 @@ public class BackEndServer {
 	private LinkedBlockingQueue<DomainToAnalyze> dispatchQueue = 
 			new LinkedBlockingQueue<DomainToAnalyze>();
 	private Dispatacher dispatcher = new Dispatacher(dispatchQueue);
-	private static Integer userServicePortNum = 4321;
+	private static Integer uiSourceDataService = 4321;
+	private static Integer uiTargetDataService = 4322;
 
 	public void start() {
 		logger.info("backend start");
@@ -38,7 +39,7 @@ public class BackEndServer {
 	
 	private void initSaver() {
 		Saver saver = Saver.getSaver();
-		DataTarget dataTarget = new UiDataTarget(4322);
+		DataTarget dataTarget = new UiDataTarget(uiTargetDataService);
 		dataTarget.setTargetName("UI service target");
 		saver.setDataTarget(dataTarget);
 	}
@@ -55,7 +56,7 @@ public class BackEndServer {
 		fetcher.addSource(dataSource);*/
 		
 		/* uiDataSource */
-		UiDataSource uiDataSource = new UiDataSource(userServicePortNum);
+		UiDataSource uiDataSource = new UiDataSource(uiSourceDataService);
 		uiDataSource.setSourceName("UI service source");
 		fetcher.addSource(uiDataSource);
 	}
