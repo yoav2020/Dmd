@@ -41,7 +41,7 @@ public class ChainRunnerPopularity extends ProcessChain {
     private String FILE_URL = "http://s3.amazonaws.com/alexa-static/top-1m.csv.zip";
     private static Map<String, Integer> mSitePopulatiry = new HashMap<String, Integer>();
     private static boolean bLocked = false;
-    private int HASH_SIZE = 10000;
+    private int HASH_SIZE = 100000;
     private String FEATURE_NAME = "domainRank";
     private boolean bFirstRun = true;
     public boolean showPos = false;
