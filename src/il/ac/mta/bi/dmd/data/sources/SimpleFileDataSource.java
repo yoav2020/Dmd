@@ -34,11 +34,10 @@ public class SimpleFileDataSource extends DataSource {
 			while ((line = reader.readLine()) != null) {
 				addDomainFromSource(line);
 			}
+			logger.info("successfully opened " + "\"" + fileName + "\"");
 		} catch (IOException e) {
 			logger.error("caught exception", e);
 		}
-		
-		logger.info("successfully opened " + "\"" + fileName + "\"");
 		fileOpened = true;
 	}
 	
