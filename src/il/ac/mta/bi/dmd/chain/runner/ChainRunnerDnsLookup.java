@@ -7,6 +7,7 @@ import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain.chainStatus;
 import il.ac.mta.bi.dmd.infra.Factory;
 import il.ac.mta.bi.dmd.lookup.DnsLookup;
+import il.mta.bi.dmd.config.ProgramProperties;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -53,8 +54,8 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 		}
 		
 		/* check property dns_server */
-		if(Factory.getFactory().getProperty("dns_server") != null)  {
-			dnsServer = Factory.getFactory().getProperty("dns_server");
+		if(ProgramProperties.getProperties().getProperty("dns_server") != null)  {
+			dnsServer = ProgramProperties.getProperties().getProperty("dns_server");
 		}
 	}
 	

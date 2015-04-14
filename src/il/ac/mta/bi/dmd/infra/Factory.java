@@ -17,9 +17,6 @@ import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
 import il.ac.mta.bi.dmd.common.Feature;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -39,8 +36,6 @@ public final class Factory {
     private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(512);
     private ScheduledThreadPoolExecutor executorServiceServer = new ScheduledThreadPoolExecutor(32);
     private static Factory theFactory = null;
-    private Properties globalProperties = null;
-
     private Factory() {
     }
 
@@ -256,29 +251,4 @@ public final class Factory {
     public void shutDownFactory() {
         executorService.shutdown();
     }
-    
-    /**
-     * Get property value from global properties repository
-     */
-
-    public String getProperty(String propertyName) {
-    	if (globalProperties == null) {
-    		
-    		//load a properties file from class path
-    		
-    		try {
-    			String propertiesFileName = "conf\\config.properties";
-    			InputStream input = new FileInputStream(propertiesFileName);
-    			globalProperties = new Properties();
-    			
-				globalProperties.load(input);
-			} catch (Exception e) {
-				logger.warn("caught exception ", e);
-				return null;
-			} 
-    	}
-    	
-    	return globalProperties.getProperty(propertyName);
-    }
-
 }
