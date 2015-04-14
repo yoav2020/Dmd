@@ -2,6 +2,7 @@ package il.ac.mta.bi.dmd.infra;
 
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerArffCreator;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerBasicChecks;
+import il.ac.mta.bi.dmd.chain.runner.ChainRunnerBrandRatio;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassifierBuilder;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerClassify;
 import il.ac.mta.bi.dmd.chain.runner.ChainRunnerDictRatio;
@@ -35,8 +36,8 @@ import org.apache.log4j.Logger;
 public final class Factory {
 
     private static Logger logger = Logger.getLogger(Factory.class);
-    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(256);
-    private ScheduledThreadPoolExecutor executorServiceServer = new ScheduledThreadPoolExecutor(256);
+    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(512);
+    private ScheduledThreadPoolExecutor executorServiceServer = new ScheduledThreadPoolExecutor(32);
     private static Factory theFactory = null;
     private Properties globalProperties = null;
 
@@ -157,6 +158,10 @@ public final class Factory {
         /* ChainRunnerDictRatio*/
         ChainRunnerDictRatio dictRatioRunner = new ChainRunnerDictRatio();
         processingChain.addToChain(dictRatioRunner);
+        
+        /* ChainRunnerBrandRatio*/
+        ChainRunnerBrandRatio brandRatioRunner = new ChainRunnerBrandRatio();
+        processingChain.addToChain(brandRatioRunner);
 
         /* ChainRunnerDnsLookup*/
         ChainRunnerDnsLookup dnsLookupRunner = new ChainRunnerDnsLookup();

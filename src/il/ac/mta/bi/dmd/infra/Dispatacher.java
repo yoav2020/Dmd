@@ -30,6 +30,9 @@ public class Dispatacher {
 				
 				/* if it is the first chain - run saver */
 				if (chain.isFirstChain() == true) {
+					if (logger.isEnabledFor(Level.INFO)) {
+						System.out.println("Got domain '" + domainToAnalyze.getDomainName() + "' to process");
+					}
 					saver.save(domainToAnalyze);
 				}
 				

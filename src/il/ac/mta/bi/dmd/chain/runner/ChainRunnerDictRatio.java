@@ -23,9 +23,17 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 /**
- * This chain runner calculate the ratio of the domain name string by
- * number of appearance of words in english are on the domain name string
- * the result number is the ratio of the numbers appearance with the number of characters */
+ * This chain runner calculate the ratio of domain name in the domain name string by
+ * number of appearances of words in an english dictionary.
+ * the result number is the ratio between the number of characters not appearing in any known
+ * word to the full domain name.
+ * 
+ * For example, 100% means that the domain doesn't contain a single english word, meaning
+ * the entire domain is gybrish, and 0% means that the entire domain names is built out
+ * of valid english words.
+ * 
+ * */
+
 public class ChainRunnerDictRatio extends ProcessChain {
 	static Logger logger = Logger.getLogger(ChainRunnerDictRatio.class);
 
@@ -50,7 +58,7 @@ public class ChainRunnerDictRatio extends ProcessChain {
 				readFileIntoTrie(new File(DICTIONARY_FILE), trie);
 			} catch (IOException e) {
 
-				logger.error("caught exception on Chain - Dictionary Ratio ", e);
+				logger.error("caught exception ", e);
 				setStatus(ProcessingChain.chainStatus.ERROR);
 			}
 			

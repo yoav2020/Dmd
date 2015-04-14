@@ -50,11 +50,10 @@ public class BackEndServer {
 		fetcher.setDispatchQueue(dispatchQueue);
 		fetcher.init();
 		
-		/* SimpleFileDataSource 
+		/* SimpleFileDataSource */
 		SimpleFileDataSource dataSource = new SimpleFileDataSource();
 		dataSource.setFileName("data\\input.txt");
-		//dataSource.setFileName("data\\test_input.txt");
-		fetcher.addSource(dataSource);*/
+		fetcher.addSource(dataSource);
 		
 		/* uiDataSource */
 		UiDataSource uiDataSource = new UiDataSource(uiSourceDataService);
