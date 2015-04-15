@@ -3,7 +3,7 @@ package il.ac.mta.dmd.data.targets;
 import il.ac.mta.bi.dmd.common.DataTarget;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.common.IClientHandler;
-import il.ac.mta.bi.dmd.common.ServerWrapper;
+import il.ac.mta.bi.dmd.common.SimpleServer;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -12,13 +12,13 @@ import org.apache.log4j.Logger;
 
 public class UiDataTarget extends DataTarget implements IClientHandler  {
 	private Integer listeningPort;
-	private ServerWrapper serverWrapper;
+	private SimpleServer serverWrapper;
 	
 	static Logger logger = Logger.getLogger(UiDataTarget.class);
 	
 	public UiDataTarget(Integer listeningPort) {
 		this.listeningPort = listeningPort;
-		this.serverWrapper = new ServerWrapper(listeningPort, this);
+		this.serverWrapper = new SimpleServer(listeningPort, this);
 		
 		serverWrapper.setServerDescription("Ui target service");
 		serverWrapper.start();

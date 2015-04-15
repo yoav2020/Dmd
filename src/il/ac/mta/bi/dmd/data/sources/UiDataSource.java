@@ -5,15 +5,15 @@ import java.io.PrintWriter;
 
 import il.ac.mta.bi.dmd.common.DataSource;
 import il.ac.mta.bi.dmd.common.IClientHandler;
-import il.ac.mta.bi.dmd.common.ServerWrapper;
+import il.ac.mta.bi.dmd.common.SimpleServer;
 
 public class UiDataSource extends DataSource implements IClientHandler  {
 	private Integer listeningPort;
-	private ServerWrapper serverWrapper;
+	private SimpleServer serverWrapper;
 	
 	public UiDataSource(Integer listeningPort) {
 		this.listeningPort = listeningPort;
-		this.serverWrapper = new ServerWrapper(listeningPort, this);
+		this.serverWrapper = new SimpleServer(listeningPort, this);
 		
 		serverWrapper.setServerDescription("Ui source service");
 		serverWrapper.start();
