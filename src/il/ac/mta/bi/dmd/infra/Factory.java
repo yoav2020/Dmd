@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 public final class Factory {
 
     private static Logger logger = Logger.getLogger(Factory.class);
-    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(512);
+    private ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1024);
     private ScheduledThreadPoolExecutor executorServiceServer = new ScheduledThreadPoolExecutor(32);
     private static Factory theFactory = null;
     private Factory() {

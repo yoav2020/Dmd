@@ -50,19 +50,21 @@ public class Dispatacher {
 					
 					total ++;
 					
-					if (logger.isEnabledFor(Level.INFO)) {
-						System.out.println("total domains classified: " + total + 
+					if (dispatchQueue.size() % 100 == 0) {
+						if (logger.isEnabledFor(Level.INFO)) {
+							System.out.println("total domains classified: " + total + 
+									"; errors: " + 
+									total_errors + 
+									"; remaining in queue: " + 
+									dispatchQueue.size());
+						}
+						
+						logger.info("total domains classified: " + total + 
 								"; errors: " + 
 								total_errors + 
 								"; remaining in queue: " + 
 								dispatchQueue.size());
 					}
-					
-					logger.info("total domains classified: " + total + 
-							"; errors: " + 
-							total_errors + 
-							"; remaining in queue: " + 
-							dispatchQueue.size());
 					
 					continue;
 				}

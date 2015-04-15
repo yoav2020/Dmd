@@ -35,7 +35,7 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	private static final WhoisLookup whoisLookup = new WhoisLookup();
 	private static final Integer MAX_QUERIES_IN_REQUEST = 1024;
 	private static final String WHOIS_SERVER_NAME = "whois.cymru.com";
-	private static final Integer MAX_CONSUMER_THREADS = 2;
+	private static final Integer MAX_CONSUMER_THREADS = 4;
 
 	private static final LinkedBlockingQueue<ChainRunnerWhoisQuery> inQueue =
 			new LinkedBlockingQueue<>();
