@@ -13,8 +13,8 @@ import com.google.common.net.InternetDomainName;
 
 public class ChainRunnerTLD extends ProcessChain {
 
-    static Logger logger = Logger.getLogger(ChainRunnerDnsLookup.class);
-    private String FEATURE_NAME = "TopLevelDomain";
+    static Logger 	logger = Logger.getLogger(ChainRunnerDnsLookup.class);
+    private String 	FEATURE_NAME = "TopLevelDomain";
 
     public ChainRunnerTLD() {
         setChainName("TopLevelDomain checker");

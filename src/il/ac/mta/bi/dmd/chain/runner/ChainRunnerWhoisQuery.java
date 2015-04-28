@@ -33,9 +33,9 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	
 	/* chain configuration */
 	private static final WhoisLookup whoisLookup = new WhoisLookup();
-	private static final Integer MAX_QUERIES_IN_REQUEST = 1024;
+	private static final Integer MAX_QUERIES_IN_REQUEST = 128;
 	private static final String WHOIS_SERVER_NAME = "whois.cymru.com";
-	private static final Integer MAX_CONSUMER_THREADS = 4;
+	private static final Integer MAX_CONSUMER_THREADS = 2;
 
 	private static final LinkedBlockingQueue<ChainRunnerWhoisQuery> inQueue =
 			new LinkedBlockingQueue<>();
@@ -59,7 +59,7 @@ public class ChainRunnerWhoisQuery extends ProcessChain {
 	private void firstChainInit() {
 		for (int i=0; i < MAX_CONSUMER_THREADS ; i ++) { 
 			Factory.getFactory().execFixedPerodicRunnableTask(new ChainRunnerWhoisQueryConsumer(),
-					1, 3, TimeUnit.SECONDS);
+					1, 2, TimeUnit.SECONDS);
 		}
 		isConsumerRunnig = true;
 	}

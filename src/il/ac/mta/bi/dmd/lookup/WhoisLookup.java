@@ -56,7 +56,7 @@ public class WhoisLookup {
 		  try {
 			  connection = new Socket(whoIsServer, port);
 			  String line = null;
-			  connection.setSoTimeout(30000);
+			  connection.setSoTimeout(10000);
 			  
 		      PrintStream out = new PrintStream(connection.getOutputStream());
 		      BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -97,7 +97,7 @@ public class WhoisLookup {
 			  }
 			  connection = new Socket(whoIsServer, port);
 			  String line = null;
-			  connection.setSoTimeout(30000);
+			  connection.setSoTimeout(10000);
 			  
 		      PrintStream out = new PrintStream(connection.getOutputStream());
 		      BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));

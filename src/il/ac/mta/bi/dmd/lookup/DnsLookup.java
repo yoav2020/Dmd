@@ -29,7 +29,7 @@ public class DnsLookup {
 	 * @return a Record array containing all the answers from the server or null if an error occurred
 	 * @throws IOException 
 	 */
-	public Record [] lookupByType(String host, String dnsServerIpAddress, int type) throws IOException {
+	public Record [] lookupByType(String host, String dnsServerIpAddress, int type, int requestTimeout) throws IOException {
 		Record answers [] = null;
 		Record rec = null;
 		
@@ -41,7 +41,8 @@ public class DnsLookup {
         	
 	        Message query = Message.newQuery(rec);
 	        SimpleResolver simpleResolver = new SimpleResolver(dnsServerIpAddress);
-	        simpleResolver.setTimeout(5);
+	        simpleResolver.setTimeout(requestTimeout);
+	        
 	        Message response = simpleResolver.send(query);
 	        answers = response.getSectionArray(Section.ANSWER);
 
@@ -62,13 +63,13 @@ public class DnsLookup {
 	 * @throws UnknownHostException 
 	 * @throws TextParseException 
 	 */
-	public Record [] lookupTypeA(String domainName, String dnsServerIpAddress) throws UnknownHostException, TextParseException {
+	public Record [] lookupTypeA(String domainName, String dnsServerIpAddress, int requestTimeout) throws UnknownHostException, TextParseException {
 		Record answers [] = null;
 		
 		SimpleResolver simpleResolver = new SimpleResolver(dnsServerIpAddress);
 		Lookup dnsLookupService = new Lookup(domainName);
 		dnsLookupService.setCache(new Cache());
-		simpleResolver.setTimeout(5);
+		simpleResolver.setTimeout(requestTimeout);
 		
 		dnsLookupService.setResolver(simpleResolver);
 		answers = dnsLookupService.run();

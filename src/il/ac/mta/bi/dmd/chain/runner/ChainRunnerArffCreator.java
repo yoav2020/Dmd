@@ -99,11 +99,12 @@ public class ChainRunnerArffCreator extends ProcessChain {
 		}
 		
 		logger.info("classification " + ": " + domainToAnalyze.getClassification().toString());
-		
+
 		this.dataSet = dataSet;
 		this.instanceData = instanceData;
 		
-		logger.info("created data instance successfully!");
+		logger.info("printable arff: " + this.instanceData.toString());
+		logger.info("data instance created successfully!");
 	}
 	
 	private void createFvWekaAttributes() {

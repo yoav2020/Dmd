@@ -1,10 +1,12 @@
 <project name="DetectingMalicuousDomainsBasedOnPredictionModelsBackEnd" basedir="." default="main">
 
     <property name="src.dir"     value="src"/>
-
     <property name="build.dir"   value="build"/>
+	<property name="resou.dir"   value="${build.dir}/resources"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
+	<property name="conf.dir"    value="${resou.dir}/conf"/>
+	<property name="data.dir"    value="${resou.dir}/data"/>
 	<property name="lib.dir"     value="lib"/>
 
     <property name="main-class"  value="il.ac.mta.bi.dmd.main.Program"/>
@@ -21,7 +23,7 @@
         <mkdir dir="${classes.dir}"/>
         <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
         <copy todir="${classes.dir}">
-            <fileset dir="${src.dir}" excludes="**/*.java"/>
+            <fileset dir="${src.dir}" excludes="**/*.java,log4j*"/>
         </copy>
     </target>
 
@@ -33,11 +35,25 @@
             </manifest>
         </jar>
     </target>
+	
+    <target name="resources">
+        <mkdir dir="${conf.dir}"/>
+    	<mkdir dir="${data.dir}"/>
+    	<copy todir="${conf.dir}" >  
+    		<fileset dir="conf" includes="**"/>
+    	</copy>
+    	<copy todir="${data.dir}" >  
+    		<fileset dir="data" includes="**"/>  
+    	</copy>
+    	<copy todir="${resou.dir}" >  
+			<fileset dir="src" includes="log4j.properties"/>  
+    	</copy>
+    </target>
 
     <target name="run" depends="jar"></target>
 
-    <target name="clean-build" depends="clean,jar"/>
+    <target name="clean-build" depends="clean,jar,resources"/>
 
-    <target name="main" depends="clean,run"/>
+    <target name="main" depends="clean,run,resources"/>
 
 </project>

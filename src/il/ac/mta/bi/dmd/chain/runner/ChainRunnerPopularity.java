@@ -33,17 +33,17 @@ import org.apache.log4j.Logger;
  */
 public class ChainRunnerPopularity extends ProcessChain {
 
-    static Logger logger = Logger.getLogger(ChainRunnerPopularity.class);
-    private String FILE_DIR = "data";
-    private String FILE_NAME = "top-1m-csvsites.zip";
-    private String FILE_NAME_OUTPUT = "top-1m.csv";
-    private String FILE_URL = "http://s3.amazonaws.com/alexa-static/top-1m.csv.zip";
+    static Logger 						logger = Logger.getLogger(ChainRunnerPopularity.class);
+    private String 						FILE_DIR = "data";
+    private String 						FILE_NAME = "top-1m-csvsites.zip";
+    private String 						FILE_NAME_OUTPUT = "top-1m.csv";
+    private String 						FILE_URL = "http://s3.amazonaws.com/alexa-static/top-1m.csv.zip";
     private static Map<String, Integer> mSitePopulatiry = new HashMap<String, Integer>();
-    private int HASH_SIZE = 100000;
-    private String FEATURE_NAME = "domainRank";
-    public boolean showPos = false;
-    private static boolean downloading = false;
-    private static Date lastMod;
+    private int 						HASH_SIZE = 100000;
+    private String 						FEATURE_NAME = "domainRank";
+    public boolean 						showPos = false;
+    private static boolean 				downloading = false;
+    private static Date 				lastMod;
 
     public ChainRunnerPopularity() {
         setChainName("Popularity checker");
@@ -192,11 +192,11 @@ public class ChainRunnerPopularity extends ProcessChain {
         	if (mSitePopulatiry == null || mSitePopulatiry.isEmpty()) {
     	        File flCheck = new File(FILE_NAME);
     	        
-    	        /* download the Alexa ranking file on the
+    	        /* if no file exists - download the Alexa ranking file on the
     	         * main thread to block other domains 
     	         */
     	        if (flCheck.exists() == false) {
-    	        	logger.info("popularity file not found, downloading");
+    	        	logger.info("popularity file not found, downloading (blocking)");
         	        AlexaDownloader alexDownloader = new AlexaDownloader();
         	        alexDownloader.run();
     	        }

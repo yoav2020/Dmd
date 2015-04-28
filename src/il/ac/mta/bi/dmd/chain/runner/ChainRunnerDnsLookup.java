@@ -29,13 +29,15 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 	static Logger 					logger = Logger.getLogger(ChainRunnerDnsLookup.class);
 	
 	private static final DnsLookup	dnsLookup = new DnsLookup();
-	private static String 	dnsServer = "8.8.8.8";
-	private static final Integer	MAX_THREAD_COUNT = 64;
+	private static String 			dnsServer = "8.8.8.8";
+	private static int				requestTimeout = 5;
+	private static final Integer	MAX_THREAD_COUNT = 256;
 	private static Semaphore 		chainRunnerDnsLookupSemaphore;
+	private static Boolean 			isConsumerRunning = false;
 	
 	private static final LinkedBlockingQueue<ChainRunnerDnsLookup> inQueue =
 			new LinkedBlockingQueue<>();
-	private static Boolean isConsumerRunning = false;
+
 	
 	public ChainRunnerDnsLookup() {
 		setChainName("DNS Lookup");
@@ -56,6 +58,12 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 		/* check property dns_server */
 		if(ProgramProperties.getProperties().getProperty("dns_server") != null)  {
 			dnsServer = ProgramProperties.getProperties().getProperty("dns_server");
+		}
+		
+		/* check property timeout */
+		if(ProgramProperties.getProperties().getProperty("request_timeout") != null)  {
+			requestTimeout = 
+					Integer.parseInt(ProgramProperties.getProperties().getProperty("request_timeout"));
 		}
 	}
 	
@@ -119,7 +127,7 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 				logger.info("creating lookup request for " + domainToAnalyze.getDomainName());
 				
 				Record [] domainRecords = dnsLookup.lookupTypeA(domainToAnalyze.getDomainName(), 
-						dnsServer);
+						dnsServer, requestTimeout);
 				
 				if(domainRecords != null) {
 					numOfRecords = domainRecords.length;
