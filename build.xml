@@ -27,7 +27,7 @@
         </copy>
     </target>
 
-    <target name="jar" depends="compile">
+    <target name="jar" depends="compile,resources">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
             <manifest>
@@ -37,8 +37,6 @@
     </target>
 	
     <target name="resources">
-        <mkdir dir="${conf.dir}"/>
-    	<mkdir dir="${data.dir}"/>
     	<copy todir="${conf.dir}" >  
     		<fileset dir="conf" includes="**"/>
     	</copy>
@@ -50,10 +48,6 @@
     	</copy>
     </target>
 
-    <target name="run" depends="jar"></target>
-
-    <target name="clean-build" depends="clean,jar,resources"/>
-
-    <target name="main" depends="clean,run,resources"/>
+    <target name="main" depends="clean,jar"/>
 
 </project>
