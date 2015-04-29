@@ -61,9 +61,9 @@ public class ChainRunnerDnsLookup extends ProcessChain {
 		}
 		
 		/* check property timeout */
-		if(ProgramProperties.getProperties().getProperty("request_timeout") != null)  {
+		if(ProgramProperties.getProperties().getProperty("dns_request_timeout") != null)  {
 			requestTimeout = 
-					Integer.parseInt(ProgramProperties.getProperties().getProperty("request_timeout"));
+					Integer.parseInt(ProgramProperties.getProperties().getProperty("dns_request_timeout"));
 		}
 	}
 	
