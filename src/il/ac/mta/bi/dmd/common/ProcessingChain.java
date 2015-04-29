@@ -49,6 +49,29 @@ public class ProcessingChain {
 		status = chainStatus.OK;
 	}
 	
+	public void fastForward() {
+		if (iterator == null) {
+			iterator = chain.listIterator();
+		}
+		while(iterator.hasNext()) {
+			iterator.next();
+		}
+	}
+	
+	public void fastForward(String chainName) {
+		boolean found = false;
+		
+		if (iterator == null) {
+			iterator = chain.listIterator();
+		}
+		
+		while(iterator.hasNext() || found == false) {
+			if (chainName.equals(iterator.next().getChainName())) {
+				found = true;
+			}
+		}
+	}
+	
 	public ProcessChain next() {
 		ProcessChain next = null;
 		
