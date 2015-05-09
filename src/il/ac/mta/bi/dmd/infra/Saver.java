@@ -3,7 +3,7 @@ package il.ac.mta.bi.dmd.infra;
 import il.ac.mta.bi.dmd.common.DataSource;
 import il.ac.mta.bi.dmd.common.DataTarget;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
-import il.ac.mta.bi.dmd.common.ProcessingChain;
+import il.ac.mta.bi.dmd.common.DomainToAnalyze.Classification;
 import il.mta.bi.dmd.config.ProgramProperties;
 
 import java.util.List;
@@ -80,21 +80,15 @@ static Logger logger = Logger.getLogger(Saver.class);
 	
 	/**
 	 * Saves the DomainToAnalyze object in the global cache and calls all registered
-	 * target sources
+	 * target sources. If CACHE_ALLOW is true, then prior to saving the domain in the cache,
+	 * the cache is checked for it, and if it cached and the status of the classification is OK,
+	 * the new domain will not overwrite the existing entry so it'll not be classified again
 	 * @param domainToAnalyze
 	 */
 
 	public void save(DomainToAnalyze domainToAnalyze) {
-		if (CACHE_ALLOW) {
-			DomainToAnalyze cachedDomainToAnalyze = 
-					globalCache.getIfPresent(domainToAnalyze.getDomainName());
-			
-			if(cachedDomainToAnalyze != null && 
-					cachedDomainToAnalyze.getChain().getStatus() != ProcessingChain.chainStatus.ERROR) {
-				logger.info(domainToAnalyze.getDomainName() + " is cached, no need to classify");
-				domainToAnalyze.getChain().fastForward();	
-				return;
-			}
+		if (CACHE_ALLOW && getClassificationFromCache(domainToAnalyze) != null) {
+			return;
 		}
 		
 		logger.info("saved: " + domainToAnalyze.getDomainName() + " to global cache");
@@ -104,6 +98,26 @@ static Logger logger = Logger.getLogger(Saver.class);
 		for (DataTarget target : targets) {
 			target.save(domainToAnalyze);
 		}
+	}
+
+	/* If the same domain is tested on the same as two objects
+	 * then the latter will always be stored in cache as they'll overwrite
+	 * each other
+	 */
+	private DomainToAnalyze getClassificationFromCache(DomainToAnalyze domainToAnalyze) {
+		DomainToAnalyze cachedDomainToAnalyze = 
+				globalCache.getIfPresent(domainToAnalyze.getDomainName());
+		
+		if(cachedDomainToAnalyze != null && 
+				cachedDomainToAnalyze.getClassification() != Classification.UNKNOWN) {
+			logger.info(domainToAnalyze.getDomainName() + " is cached, no need to classify");
+			domainToAnalyze.setPropertiesMap(cachedDomainToAnalyze.getPropertiesMap());
+			domainToAnalyze.setFeaturesMap(cachedDomainToAnalyze.getFeaturesMap());
+			domainToAnalyze.getChain().fastForward("Classifier Builder Runner");
+			
+			return cachedDomainToAnalyze;
+		}
+		return null;
 	}
 
 	public Cache<String, DomainToAnalyze> getGlobalCache() {

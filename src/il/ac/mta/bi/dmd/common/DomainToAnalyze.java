@@ -181,4 +181,12 @@ public class DomainToAnalyze {
 		this.benignChance = benignChance;
 	}
 
+	public void setFeaturesMap(Map<String, Feature> featuresMap) {
+		this.featuresMap = featuresMap;
+	}
+
+	public void setPropertiesMap(Map<String, Object> propertiesMap) {
+		this.propertiesMap = propertiesMap;
+	}
+
 }

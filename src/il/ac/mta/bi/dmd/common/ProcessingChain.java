@@ -65,8 +65,9 @@ public class ProcessingChain {
 			iterator = chain.listIterator();
 		}
 		
-		while(iterator.hasNext() || found == false) {
-			if (chainName.equals(iterator.next().getChainName())) {
+		while(iterator.hasNext() && found == false) {
+			if (iterator.next().getChainName().contains(chainName)) {
+				logger.info("fast forward to chain= " + chainName);
 				found = true;
 			}
 		}
