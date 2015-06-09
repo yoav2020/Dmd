@@ -6,6 +6,7 @@ import il.ac.mta.bi.dmd.common.ProcessingChain;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.log4j.Logger;
 
 /**
@@ -30,7 +31,7 @@ public class ChainRunnerStripDomainName extends ProcessChain {
 			String domain = domainToAnalyze.getDomainName();
 			String domainUrl = domainToAnalyze.getDomainName();
 			
-			if(!domain.matches("^http.*")) { 
+			if(!UrlValidator.getInstance().isValid(domain)) { 
 				domainUrl = "http://" + domain;
 			}
 			
