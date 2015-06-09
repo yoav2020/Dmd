@@ -4,6 +4,7 @@ import il.ac.mta.bi.dmd.common.ProcessChain;
 import il.ac.mta.bi.dmd.common.ProcessingChain;
 
 import org.apache.commons.validator.routines.DomainValidator;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.log4j.Logger;
 
 /**
@@ -24,12 +25,19 @@ public class ChainRunnerValidate extends ProcessChain {
 	public void run() {
 		logger.info("validating domain: " + domainToAnalyze.getDomainName());
 		
-		if (!DomainValidator.getInstance().isValid(domainToAnalyze.getDomainName())) {
-			logger.info("domain is INVALID");
-			setStatus(ProcessingChain.chainStatus.ERROR);
+		/* allow a URL as we expect future chain to strip the domain name */
+		
+		String[] schemes = {"http","https", ""};
+		UrlValidator urlValidator = new UrlValidator(schemes);
+		
+		if (DomainValidator.getInstance().isValid(domainToAnalyze.getDomainName().split("/")[0])) {
+			logger.info("a VALID domain");
+		} else if (urlValidator.isValid(domainToAnalyze.getDomainName())) {
+			logger.info("a VALID url");
 		}
 		else {
-			logger.info("domain is VALID");
+			logger.info("domain is INVALID");
+			setStatus(ProcessingChain.chainStatus.ERROR);
 		}
 		flush();
 	}
