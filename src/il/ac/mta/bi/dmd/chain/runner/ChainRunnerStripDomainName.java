@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 public class ChainRunnerStripDomainName extends ProcessChain {
 	private static Logger logger = Logger.getLogger(ChainRunnerDnsLookup.class);
-	private static String stripRegex = "^http://|^www[0-9]?.|^ftp.|^smtp.";
+	private static String stripRegex = "^https?://|^www[0-9]?.|^ftp.|^smtp.";
 	
 	public ChainRunnerStripDomainName() {
 		setChainName("Domain Name Strip");
@@ -30,7 +30,7 @@ public class ChainRunnerStripDomainName extends ProcessChain {
 			String domain = domainToAnalyze.getDomainName();
 			String domainUrl = domainToAnalyze.getDomainName();
 			
-			if(!domain.startsWith("http") && !domain.startsWith("https")) { 
+			if(!domain.matches("^http.*")) { 
 				domainUrl = "http://" + domain;
 			}
 			
