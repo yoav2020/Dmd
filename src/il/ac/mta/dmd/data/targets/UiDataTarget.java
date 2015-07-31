@@ -15,6 +15,8 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 	private Integer listeningPort;
 	private SimpleServer serverWrapper;
 	
+	private final static Integer MAX_SLEEP_TIME = 15000;
+	
 	static Logger logger = Logger.getLogger(UiDataTarget.class);
 	
 	public UiDataTarget(Integer listeningPort) {
@@ -29,7 +31,7 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 	public void handle(BufferedReader in, PrintWriter out) throws Exception {
 		out.println("User get domain name class, usage: <domain_name>. " +
 				"To wait until a classification is available or until timeout is reached, " +
-				"use: type \"$ sleep <domain_name>\"" + "To exit, type \"$ exit\"");
+				"use: type \"$ sleep <domain_name>. \"" + "To exit, type \"$ exit\"");
 
 		while (true) {
 		    String line = in.readLine();
@@ -59,7 +61,7 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 			    	break;
 			    }
 			    if (sleepOn) { 
-			    	 if (System.currentTimeMillis()-start > 30000) {
+			    	 if (System.currentTimeMillis()-start > MAX_SLEEP_TIME) {
 			    		 out.println("timeout reached, aborting sleep");
 			    		 break;
 			    	 }
