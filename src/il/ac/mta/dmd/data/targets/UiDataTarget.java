@@ -3,6 +3,7 @@ package il.ac.mta.dmd.data.targets;
 import il.ac.mta.bi.dmd.common.DataTarget;
 import il.ac.mta.bi.dmd.common.DomainToAnalyze;
 import il.ac.mta.bi.dmd.common.IClientHandler;
+import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.common.SimpleServer;
 
 import java.io.BufferedReader;
@@ -30,24 +31,37 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 
 		while (true) {
 		    String line = in.readLine();
+		    boolean sleepOn = false;
 		    
 		    if (line.equals("$ exit")) {
 		    	out.println("bye!");
 		    	return;
 		    }
+		    if (line.startsWith("$ sleep ")) {
+		    	line = line.replaceFirst("\\$ sleep\\s+", "");
+		    	sleepOn = true;
+		    }
 		    if (line.isEmpty()) {
 		    	continue;
 		    }
 		    
-		    DomainToAnalyze domainToAnalyze = getGlobalCache().getIfPresent(line);
-		    
-		    if(domainToAnalyze != null) {
-		    	out.println("Classification: " + line);
-		    	out.println(domainToAnalyze.toStringFull());
-		    	continue;
+		    DomainToAnalyze domainToAnalyze = null;
+		    long start = System.currentTimeMillis();
+		    while (true) {
+		    	domainToAnalyze = getGlobalCache().getIfPresent(line);
+			    if(domainToAnalyze != null && 
+			    		domainToAnalyze.getClassification() != DomainToAnalyze.Classification.UNKNOWN &&
+			    		domainToAnalyze.getRunStatus() != ProcessingChain.chainStatus.ERROR) {
+			    	out.println("Classification: " + line);
+			    	out.println(domainToAnalyze.toStringFull());
+			    	break;
+			    }
+			    if (sleepOn) { Thread.sleep(500); }
+			    else { break; }
 		    }
-		    
-		    out.println("domain not available: " + line);
+		    if (domainToAnalyze == null) {
+		    	out.println("domain not available");
+		    }
 		}
 	}
 

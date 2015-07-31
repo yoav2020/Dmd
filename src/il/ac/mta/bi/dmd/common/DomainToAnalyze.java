@@ -146,6 +146,10 @@ public class DomainToAnalyze {
 		return getDomainName();
 	}
 	
+	public ProcessingChain.chainStatus getRunStatus() {
+		return getChain().getStatus();
+	}
+	
 	public String toStringFull() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(domainName + " classification:" + '\n');
