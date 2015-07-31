@@ -27,7 +27,9 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 
 	@Override
 	public void handle(BufferedReader in, PrintWriter out) throws Exception {
-		out.println("User get domain name class, usage: <domain_name>. To exit, type \"$ exit\"");
+		out.println("User get domain name class, usage: <domain_name>. " +
+				"To wait until a classification is available or until timeout is reached, " +
+				"use: type \"$ sleep <domain_name>\"" + "To exit, type \"$ exit\"");
 
 		while (true) {
 		    String line = in.readLine();
@@ -50,13 +52,19 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 		    while (true) {
 		    	domainToAnalyze = getGlobalCache().getIfPresent(line);
 			    if(domainToAnalyze != null && 
-			    		domainToAnalyze.getClassification() != DomainToAnalyze.Classification.UNKNOWN &&
-			    		domainToAnalyze.getRunStatus() != ProcessingChain.chainStatus.ERROR) {
+			    		(domainToAnalyze.getClassification() != DomainToAnalyze.Classification.UNKNOWN ||
+			    		domainToAnalyze.getRunStatus() == ProcessingChain.chainStatus.ERROR)) {
 			    	out.println("Classification: " + line);
 			    	out.println(domainToAnalyze.toStringFull());
 			    	break;
 			    }
-			    if (sleepOn) { Thread.sleep(500); }
+			    if (sleepOn) { 
+			    	 if (System.currentTimeMillis()-start > 30000) {
+			    		 out.println("timeout reached, aborting sleep");
+			    		 break;
+			    	 }
+			    	Thread.sleep(500);
+			    }
 			    else { break; }
 		    }
 		    if (domainToAnalyze == null) {
