@@ -13,9 +13,10 @@ import org.apache.log4j.Logger;
 
 public class UiDataTarget extends DataTarget implements IClientHandler  {
 	private Integer listeningPort;
-	private SimpleServer serverWrapper;
 	
-	private final static Integer MAX_SLEEP_TIME = 15000;
+	private SimpleServer serverWrapper;
+
+	private final static Integer MAX_SLEEP_TIME = 60000;
 	
 	static Logger logger = Logger.getLogger(UiDataTarget.class);
 	
