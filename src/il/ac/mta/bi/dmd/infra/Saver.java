@@ -72,7 +72,7 @@ static Logger logger = Logger.getLogger(Saver.class);
 			}
 		}
 		globalCache = CacheBuilder.newBuilder().
-				concurrencyLevel(1).
+				concurrencyLevel(16).
 				maximumSize(CACHE_MAX_SIZE).
 				expireAfterWrite(CACHE_ENTRY_TIMEOUT, TimeUnit.MINUTES).
 				build();
