@@ -7,7 +7,7 @@ import il.ac.mta.bi.dmd.common.ProcessingChain;
 import il.ac.mta.bi.dmd.common.SimpleServer;
 
 import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 
 import org.apache.log4j.Logger;
 
@@ -29,8 +29,8 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 	}
 
 	@Override
-	public void handle(BufferedReader in, PrintWriter out) throws Exception {
-		out.println("User get domain name class, usage: <domain_name>. " +
+	public void handle(BufferedReader in, ObjectOutputStream out) throws Exception {
+		System.out.println("User get domain name class, usage: <domain_name>. " +
 				"To wait until a classification is available or until timeout is reached, " +
 				"use: type \"$ sleep <domain_name>. \"" + "To exit, type \"$ exit\"");
 
@@ -39,7 +39,7 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 		    boolean sleepOn = false;
 		    
 		    if (line.equals("$ exit")) {
-		    	out.println("bye!");
+		    	System.out.println("bye!");
 		    	return;
 		    }
 		    if (line.startsWith("$ sleep ")) {
@@ -57,13 +57,14 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 			    if(domainToAnalyze != null && 
 			    		(domainToAnalyze.getClassification() != DomainToAnalyze.Classification.UNKNOWN ||
 			    		domainToAnalyze.getRunStatus() == ProcessingChain.chainStatus.ERROR)) {
-			    	out.println("Classification: " + line);
-			    	out.println(domainToAnalyze.toStringFull());
+			    	//out.println("Classification: " + line);
+			    	//out.println(domainToAnalyze.toStringFull());
+			    	out.writeObject(domainToAnalyze.toObjectResult());
 			    	break;
 			    }
 			    if (sleepOn) { 
 			    	 if (System.currentTimeMillis()-start > MAX_SLEEP_TIME) {
-			    		 out.println("timeout reached, aborting sleep");
+			    		 System.out.println("timeout reached, aborting sleep");
 			    		 break;
 			    	 }
 			    	Thread.sleep(500);
@@ -71,7 +72,7 @@ public class UiDataTarget extends DataTarget implements IClientHandler  {
 			    else { break; }
 		    }
 		    if (domainToAnalyze == null) {
-		    	out.println("domain not available");
+		    	System.out.println("domain not available");
 		    }
 		}
 	}

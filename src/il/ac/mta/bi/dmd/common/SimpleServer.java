@@ -6,7 +6,7 @@ import il.ac.mta.bi.dmd.infra.Factory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -87,7 +87,7 @@ public class SimpleServer {
 		    	BufferedReader in = new BufferedReader(new InputStreamReader(
 		    			clientSocket.getInputStream()));
 
-		    	PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+		    	ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
 		    	
 		    	clientHandler.handle(in, out);
 		    	

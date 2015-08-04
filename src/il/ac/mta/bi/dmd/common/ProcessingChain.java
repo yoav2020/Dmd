@@ -1,5 +1,6 @@
 package il.ac.mta.bi.dmd.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,7 @@ public class ProcessingChain {
 	
 	static Logger logger = Logger.getLogger(ProcessingChain.class);
 	
-	public enum chainStatus {
+	public enum chainStatus implements Serializable{
 		OK,
 		ERROR
 	}

@@ -1,5 +1,6 @@
 package il.ac.mta.bi.dmd.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,7 +18,7 @@ public class DomainToAnalyze {
 	private double maliciousChance;
 	private double benignChance;
 	
-	public enum Classification {
+	public enum Classification implements Serializable {
 		UNKNOWN,
 		MALICIOUS,
 		BENIGN
@@ -148,6 +149,10 @@ public class DomainToAnalyze {
 	
 	public ProcessingChain.chainStatus getRunStatus() {
 		return getChain().getStatus();
+	}
+
+	public domainResult toObjectResult() {
+		return new domainResult(this);
 	}
 	
 	public String toStringFull() {

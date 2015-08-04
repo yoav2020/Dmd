@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
 
-public class BackEndServer {
+public class BackEndServer extends Thread {
 	
 	static Logger logger = Logger.getLogger(BackEndServer.class);
 
@@ -20,10 +20,9 @@ public class BackEndServer {
 	private static Integer uiSourceDataService = 4321;
 	private static Integer uiTargetDataService = 4322;
 
-	public void start() {
-		logger.info("backend start");
-		System.out.println("Server backend started");
-		
+    public void run() {
+        logger.info("backend thread start");
+		System.out.println("Server backend thread started");
 		/* data source */
 		initFetcher();
 		
@@ -36,7 +35,27 @@ public class BackEndServer {
 		System.out.println("Server backend terminated");
 
 		fini();
-	}
+		
+    }
+
+	/*public void start() {
+		logger.info("backend start");
+		System.out.println("Server backend started");
+        logger.info("MOSHIK");
+
+		/* data source */
+		//initFetcher();
+		
+		/* data target */
+		/*initSaver();
+		
+		dispatcher.run();
+
+		logger.info("backend end");
+		System.out.println("Server backend terminated");
+
+		fini();
+	}*/
 	
 	private void initSaver() {
 		Saver saver = Saver.getSaver();
